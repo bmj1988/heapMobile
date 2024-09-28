@@ -7,3 +7,8 @@ Basically heap aims to be an online market place for scrap metal purchase and sa
 ## tools
 
 the idea right now is to use event driven architecture through AWS to log everything to a dynamo instance, send the necessary emails. I'm using React Native to design a project accessible in both android and ios. During development I'm using AppWrite to test DB calls while the actual frontend client is being built.
+
+### Open Known Issues
+
+1) Modal not centering
+2) Text in modal showing up outside of modal
