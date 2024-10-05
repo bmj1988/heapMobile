@@ -1,4 +1,4 @@
-import { View, Text, RefreshControl, FlatList, Pressable } from 'react-native'
+import { RefreshControl, FlatList, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import useAppwrite from '../../lib/useAppwrite'
 import { getAllListings } from '../../lib/appwrite'
@@ -7,6 +7,8 @@ import HighlightedListing from '../../components/HighlightedListing'
 import ListingCard from '../../components/ListingCard'
 import EmptyState from '../../components/EmptyState'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { router } from 'expo-router'
+
 
 const Home = () => {
   const { user, page } = useGlobalContext()
@@ -50,6 +52,8 @@ const Home = () => {
           <EmptyState
             title={"No listings found."}
             subtitle={"Be the first to post a listing today!"}
+            buttonText={"Post a listing"}
+            onPress={() => router.push('/listings')}
           />
         )}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
