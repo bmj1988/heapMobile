@@ -3,6 +3,7 @@ import { useState } from 'react'
 import CustomButton from './CustomButton'
 import { FontAwesome } from '@expo/vector-icons'
 import ListingDetailsModal from './Modals/ListingDetailsModal'
+import CustomModal from './Modals/TestingDetailsModal'
 
 const HighlightedListing = ({ listing }) => {
     const [bid, setBid] = useState(0.00)
@@ -56,7 +57,8 @@ const HighlightedListing = ({ listing }) => {
                     <Text className="text-sm font-thin color-gray-100 underline">See full listing details</Text>
                 </Pressable>
             </View>
-            <ListingDetailsModal listing={listing} isVisible={modalVisible} setVisible={() => setModalVisible()} />
+            {/* <ListingDetailsModal listing={listing} isVisible={modalVisible} setVisible={() => setModalVisible()} /> */}
+            <CustomModal visible={modalVisible} onClose={() => setModalVisible(false)} listing={listing} />
         </View>
     )
 }
