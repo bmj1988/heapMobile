@@ -21,7 +21,7 @@ const BidDisplay = ({ bid }) => {
     )
 }
 
-const OwnListings = ({ userListings }) => {
+const OwnListings = ({ userListings, selectedListing, setSelectedListing }) => {
 
     return (
         <FlatList
