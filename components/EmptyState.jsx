@@ -2,10 +2,9 @@ import { View, Text, Image } from 'react-native'
 import React from 'react'
 import icons from '../constants/icons'
 import CustomButton from './CustomButton'
-import { router } from 'expo-router'
 const FontAwesome = icons.FontAwesome
 
-const EmptyState = ({ title, subtitle }) => {
+const EmptyState = ({ title, subtitle, buttonText, onPress }) => {
     return (
         <View className="justify-center items-center px-4">
             <FontAwesome
@@ -20,7 +19,7 @@ const EmptyState = ({ title, subtitle }) => {
                 {subtitle}
             </Text>
 
-            <CustomButton title="Post a listing" containerStyles={"w-full my-5"} handlePress={() => router.push('/listings')} />
+            <CustomButton title={buttonText} containerStyles={"w-full my-5"} handlePress={onPress} />
 
         </View>
     )
