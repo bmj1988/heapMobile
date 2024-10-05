@@ -11,11 +11,9 @@ const ListingCard = ({ listing, selected }) => {
                 <Text className="text-2xl font-rsbold color-mint">{askingPrice}</Text>
             </View>
             <View className="flex-start">
-                {/* {listing.tags.map((tag) => {
-                    return <ListingTag tag={tag} />
-                })} */}
-                <ListingTag tag={{ name: "Rotors" }} />
-                <ListingTag tag={{ name: "Motors" }} />
+                {listing.tags.map((tag) => {
+                    return <ListingTag tag={tag} key={tag.$id} />
+                })}
             </View>
             <View>
                 {listing.images.map((image) => {
