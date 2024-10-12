@@ -1,5 +1,5 @@
 import { View, Text, TextInput, Pressable } from 'react-native'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CustomButton from './CustomButton'
 import ListingDetailsModal from './Modals/ListingDetailsModal'
 import CustomModal from './Modals/TestingDetailsModal'
@@ -16,19 +16,35 @@ const HighlightedListing = ({ listing, onClose }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [submitted, setSubmitted] = useState(null)
 
+    useEffect(() => {
+        if (listing) {
+            console.log("LISTING", listing)
+            console.log("BIDS", listing.bids)
+            for (let bid of listing.bids) {
+                console.log("BID")
+                if (bid && bid.buyerId && bid.buyerId.$id === user.$id) {
+                    setSubmitted(bid)
+                    return
+                }
+            }
+        }
+        return
+    }, [listing])
 
     const submitBid = async () => {
         setIsLoading(true)
-        const newBid = await postBid({ bid, message: message ? message : null, buyerId: user.$id, listing: listing.$id })
+        const newBid = await postBid({ offer: parseFloat(bid), message: message ? message : null, buyerId: user.$id, listing: listing.$id })
+        console.log(newBid)
         setSubmitted(newBid)
+        setIsLoading(false)
     }
 
     if (!listing) return (<></>)
 
     if (submitted) return (
         <View className="w-[90%] bg-black-100 border-[1px] border-solid border-gray-100 justify-center items-center rounded-lg p-1 mb-5">
-            <Text className="text-lg font-rssemibold color-mint">{`Your bid of ${submitted.offer} has been submitted.`}</Text>
-            <CustomButton title={'Close'} containerStyles={"bg-carmine"} handlePress={onClose} />
+            <Text className="text-lg font-rssemibold color-mint">{`Your bid of $${submitted.offer} has been submitted.`}</Text>
+            <CustomButton title={'Close'} containerStyles={"bg-carmine w-[30%] min-h-[45px] mt-[20px] mb-[5px]"} handlePress={onClose} />
         </View>
     )
 
