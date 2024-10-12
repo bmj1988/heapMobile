@@ -22,7 +22,7 @@ const HighlightedListing = ({ listing, onClose }) => {
                     <TextInput
                         inputMode='decimal'
                         keyboardType='decimal-pad'
-                        className="bg-gray-100 color-black rounded-sm w-20 h-[40px]"
+                        className="bg-gray-100 color-black rounded-sm w-20 h-[40px] font-rsregular text-[18px]"
                         value={bid}
                         onChangeText={(e) => {
                             const valid = e.match(/^(\d*\.{0,1}\d{0,2}$)/)
@@ -41,7 +41,7 @@ const HighlightedListing = ({ listing, onClose }) => {
                         multiline={true}
                         rows={2}
                         maxLength={200}
-                        className="bg-gray-100 w-[180px] h-[40px] color-black rounded-sm"
+                        className="bg-gray-100 w-[180px] h-[40px] color-black rounded-sm font-rsregular text-[16px]"
                     />
                 </View>
             </View>
