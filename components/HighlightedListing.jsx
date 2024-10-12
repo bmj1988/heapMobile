@@ -1,17 +1,36 @@
 import { View, Text, TextInput, Pressable } from 'react-native'
 import { useState } from 'react'
 import CustomButton from './CustomButton'
-import { FontAwesome } from '@expo/vector-icons'
 import ListingDetailsModal from './Modals/ListingDetailsModal'
 import CustomModal from './Modals/TestingDetailsModal'
+import { postBid } from '../lib/appwrite'
+import { useGlobalContext } from '@/context/GlobalProvider'
+
+
 
 const HighlightedListing = ({ listing, onClose }) => {
+    const { user } = useGlobalContext()
     const [bid, setBid] = useState(0.00)
     const [message, setMessage] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [submitted, setSubmitted] = useState(null)
+
+
+    const submitBid = async () => {
+        setIsLoading(true)
+        const newBid = await postBid({ bid, message: message ? message : null, buyerId: user.$id, listing: listing.$id })
+        setSubmitted(newBid)
+    }
 
     if (!listing) return (<></>)
+
+    if (submitted) return (
+        <View className="w-[90%] bg-black-100 border-[1px] border-solid border-gray-100 justify-center items-center rounded-lg p-1 mb-5">
+            <Text className="text-lg font-rssemibold color-mint">{`Your bid of ${submitted.offer} has been submitted.`}</Text>
+            <CustomButton title={'Close'} containerStyles={"bg-carmine"} handlePress={onClose} />
+        </View>
+    )
 
     return (
         <View className="w-[90%] bg-black-100 border-[1px] border-solid border-gray-100 justify-center items-center rounded-lg p-1 mb-5">
@@ -47,7 +66,7 @@ const HighlightedListing = ({ listing, onClose }) => {
             </View>
             <View className="flex-row justify-between w-[100%] px-7 py-3">
                 <View className="w-[30%]">
-                    <CustomButton title={'Close'} containerStyles={"bg-carmine min-h-[45px]"} handlePress={onClose} />
+                    <CustomButton title={'Close'} isLoading={isLoading} containerStyles={"bg-carmine min-h-[45px]"} handlePress={onClose} />
                 </View>
                 <View className="w-[30%]">
                     <CustomButton title={'Bid'} isLoading={isLoading} containerStyles={"min-h-[45px]"} handlePress={() => submitBid()} />
