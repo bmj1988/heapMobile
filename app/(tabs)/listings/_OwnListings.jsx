@@ -1,7 +1,6 @@
 import { FlatList, Pressable } from "react-native"
-import ListingCard from "../../../components/ListingCard"
-import ListingCard from '../../components/ListingCard'
-import CustomButton from '../../components/CustomButton'
+import ListingCard from "@/components/ListingCard"
+import CustomButton from '@/components/CustomButton'
 
 const BidDisplay = ({ bid }) => {
     return (

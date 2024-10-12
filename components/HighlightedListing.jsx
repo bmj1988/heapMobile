@@ -5,10 +5,11 @@ import { FontAwesome } from '@expo/vector-icons'
 import ListingDetailsModal from './Modals/ListingDetailsModal'
 import CustomModal from './Modals/TestingDetailsModal'
 
-const HighlightedListing = ({ listing }) => {
+const HighlightedListing = ({ listing, onClose }) => {
     const [bid, setBid] = useState(0.00)
     const [message, setMessage] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
     if (!listing) return (<></>)
 
@@ -45,11 +46,11 @@ const HighlightedListing = ({ listing }) => {
                 </View>
             </View>
             <View className="flex-row justify-between w-[100%] px-7 py-3">
-                <View>
-                    <FontAwesome name='close' color={'#DC143C'} size={50} />
+                <View className="w-[30%]">
+                    <CustomButton title={'Close'} containerStyles={"bg-carmine min-h-[45px]"} handlePress={onClose} />
                 </View>
-                <View>
-                    <FontAwesome name='send' color={'#50bf88'} size={50} />
+                <View className="w-[30%]">
+                    <CustomButton title={'Bid'} isLoading={isLoading} containerStyles={"min-h-[45px]"} handlePress={() => submitBid()} />
                 </View>
             </View>
             <View className="w-[full] justify-center">

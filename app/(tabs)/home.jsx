@@ -38,7 +38,7 @@ const Home = () => {
           </Pressable>
         )}
         ListHeaderComponent={() => (
-          <HighlightedListing listing={selectedListing} />
+          <HighlightedListing listing={selectedListing} onClose={() => setSelectedListing(null)} />
         )}
         // ListHeaderComponent={() => (
         //   <View className="my-6 px-4 space-y-6">

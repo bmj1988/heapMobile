@@ -23,6 +23,9 @@ module.exports = {
         flame: {
           DEFAULT: "#dbaf0d"
         },
+        carmine: {
+          DEFAULT: '#DC143C'
+        },
         black: {
           DEFAULT: "#000",
           100: "#1E1E2D",

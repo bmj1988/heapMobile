@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { getUserListings } from '../../lib/appwrite'
+import { getUserListings } from '@/lib/appwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
-import useAppwrite from '../../lib/useAppwrite'
-import OwnListings from './OwnListings'
-import { getUserBids } from '../../../lib/appwrite'
-import UserBids from './UserBids'
+import useAppwrite from '@/lib/useAppwrite'
+import OwnListings from './_OwnListings'
+import { getUserBids } from '@/lib/appwrite'
+import UserBids from './_UserBids'
 
 
 const Listings = () => {
