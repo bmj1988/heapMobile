@@ -44,6 +44,11 @@ const HighlightedListing = ({ listing, onClose }) => {
     if (submitted) return (
         <View className="w-[90%] bg-black-100 border-[1px] border-solid border-gray-100 justify-center items-center rounded-lg p-1 mb-5">
             <Text className="text-lg font-rssemibold color-mint">{`Your bid of $${submitted.offer} has been submitted.`}</Text>
+            <View className="w-[full] justify-center">
+                <Pressable onPress={() => setModalVisible(true)}>
+                    <Text className="text-sm font-thin color-gray-100 underline">See full listing details</Text>
+                </Pressable>
+            </View>
             <CustomButton title={'Close'} containerStyles={"bg-carmine w-[30%] min-h-[45px] mt-[20px] mb-[5px]"} handlePress={onClose} />
         </View>
     )
