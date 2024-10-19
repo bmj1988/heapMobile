@@ -30,7 +30,7 @@ const OwnListings = ({ userListings, selectedListing, setSelectedListing }) => {
             keyExtractor={(item) => item.$id}
             renderItem={({ item }) => (
                 <Pressable onPress={() => setSelectedListing(item.$id)}>
-                    <ListingCard listing={item} selected={selectedListing && selectedListing === item.$id} />
+                    <ListingCard listing={item} selected={selectedListing && selectedListing === item.$id} ownListing={true} />
                     {selectedListing === item.$id &&
                         item.bids.map((bid) => <BidDisplay bid={bid} />)
                     }
