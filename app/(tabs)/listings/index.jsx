@@ -8,11 +8,13 @@ import OwnListings from './_OwnListings'
 import { getUserBids } from '@/lib/appwrite'
 import UserBids from './_UserBids'
 import CaretCollapsible from '../../../components/CaretCollapsible'
+import CustomModal from '../../../components/Modals/TestingDetailsModal'
 
 
 const Listings = () => {
     const { user, page } = useGlobalContext()
     const [selectedListing, setSelectedListing] = useState(null)
+    const [detailsModal, setDetailsModal] = useState({})
     const [viewOwnPosts, setViewOwnListings] = useState(true)
     const { data: userListings, refetch } = useAppwrite(() => getUserListings(user.$id))
     const { data: userBids } = useAppwrite(() => getUserBids(user.$id))
@@ -22,8 +24,9 @@ const Listings = () => {
             {/* Your posted listings */}
             <CaretCollapsible text={"Your listings"} DropdownComponent={<OwnListings userListings={userListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} />} />
             {/* Listings you've bid on */}
-            <CaretCollapsible text={"Your bids"} DropdownComponent={<UserBids bids={userBids} />} />
+            <CaretCollapsible text={"Your bids"} DropdownComponent={<UserBids bids={userBids} setSelected={setDetailsModal} selected={detailsModal} />} />
             {/* <UserBids bids={userBids} /> */}
+            {Object.keys(detailsModal).length > 0 && <CustomModal visible={Object.keys(detailsModal).length > 0} onClose={() => setDetailsModal({})} listing={detailsModal} />}
         </SafeAreaView>
     )
 }

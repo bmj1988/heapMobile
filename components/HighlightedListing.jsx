@@ -1,7 +1,6 @@
 import { View, Text, TextInput, Pressable } from 'react-native'
 import { useEffect, useState } from 'react'
 import CustomButton from './CustomButton'
-import ListingDetailsModal from './Modals/ListingDetailsModal'
 import CustomModal from './Modals/TestingDetailsModal'
 import { postBid } from '../lib/appwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
@@ -46,10 +45,11 @@ const HighlightedListing = ({ listing, onClose }) => {
             <Text className="text-lg font-rssemibold color-mint">{`Your bid of $${submitted.offer} has been submitted.`}</Text>
             <View className="w-[full] justify-center">
                 <Pressable onPress={() => setModalVisible(true)}>
-                    <Text className="text-sm font-thin color-gray-100 underline">See full listing details</Text>
+                    <Text className="text-lg font-thin color-gray-100 underline">See full listing details</Text>
                 </Pressable>
             </View>
             <CustomButton title={'Close'} containerStyles={"bg-carmine w-[30%] min-h-[45px] mt-[20px] mb-[5px]"} handlePress={onClose} />
+            <CustomModal visible={modalVisible} onClose={() => setModalVisible(false)} listing={listing} />
         </View>
     )
 
@@ -98,7 +98,6 @@ const HighlightedListing = ({ listing, onClose }) => {
                     <Text className="text-sm font-thin color-gray-100 underline">See full listing details</Text>
                 </Pressable>
             </View>
-            {/* <ListingDetailsModal listing={listing} isVisible={modalVisible} setVisible={() => setModalVisible()} /> */}
             <CustomModal visible={modalVisible} onClose={() => setModalVisible(false)} listing={listing} />
         </View>
     )

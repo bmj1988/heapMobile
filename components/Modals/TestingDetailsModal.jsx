@@ -4,7 +4,6 @@ import ListingImagesCarousel from './ListingImagesCarousel';
 import ListingTag from '../ListingTag';
 
 const CustomModal = ({ visible, onClose, listing }) => {
-    console.log(listing.tags)
     return (
         <Modal
             transparent={true}

@@ -3,7 +3,7 @@ import React from 'react'
 import ListingCard from '../../../components/ListingCard'
 import { router } from 'expo-router'
 
-const UserBids = ({ bids, setSelectedBid, selectedBid }) => {
+const UserBids = ({ bids, setSelected, selected }) => {
     return (
         <FlatList
             className="max-h-[250px] w-[90%] m-5"
@@ -11,8 +11,8 @@ const UserBids = ({ bids, setSelectedBid, selectedBid }) => {
             data={bids}
             keyExtractor={(item) => item.$id}
             renderItem={({ item }) => (
-                <Pressable onPress={() => console.log("clicked a listing you bid on")}>
-                    <ListingCard listing={item.listing} selected={selectedBid === item.$id} bid={item} />
+                <Pressable onLongPress={() => setSelected(item.listing)}>
+                    <ListingCard listing={item.listing} selected={selected.$id === item.listing.$id} bid={item} />
                 </Pressable>
             )}
             ListEmptyComponent={() => (
@@ -23,6 +23,7 @@ const UserBids = ({ bids, setSelectedBid, selectedBid }) => {
                     onPress={() => router.replace('/home')} />
             )}
         />
+
     )
 }
 
