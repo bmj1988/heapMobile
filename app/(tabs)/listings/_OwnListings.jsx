@@ -1,7 +1,7 @@
 import { FlatList, Pressable, Text, View } from "react-native"
 import ListingCard from "@/components/ListingCard"
 import CustomButton from '@/components/CustomButton'
-
+import EmptyState from '@/components/EmptyState'
 const BidDisplay = ({ bid }) => {
     return (
         <View className="h-[40px] w-[50%] bg-black-200 rounded-2xl p-2 flex-row items-center justify-around">
@@ -24,7 +24,7 @@ const OwnListings = ({ userListings, selectedListing, setSelectedListing }) => {
 
     return (
         <FlatList
-            className="h-[250px] w-full m-5"
+            className="max-h-[250px] w-[90%] m-5"
             contentContainerStyle={{ justifyContent: 'center' }}
             data={userListings}
             keyExtractor={(item) => item.$id}

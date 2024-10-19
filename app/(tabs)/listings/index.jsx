@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Text } from 'react-native'
+import { Pressable, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { getUserListings } from '@/lib/appwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
@@ -7,6 +7,7 @@ import useAppwrite from '@/lib/useAppwrite'
 import OwnListings from './_OwnListings'
 import { getUserBids } from '@/lib/appwrite'
 import UserBids from './_UserBids'
+import CaretCollapsible from '../../../components/CaretCollapsible'
 
 
 const Listings = () => {
@@ -19,10 +20,9 @@ const Listings = () => {
     return (
         <SafeAreaView className="bg-primary h-full">
             {/* Your posted listings */}
-            <Text className="font-rssemibold color-mint text-lg">Your listings:</Text>
-            {/* <OwnListings userListings={userListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} /> */}
+            <CaretCollapsible text={"Your listings"} DropdownComponent={<OwnListings userListings={userListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} />} />
             {/* Listings you've bid on */}
-            <Text className="font-rssemibold color-mint text-lg">Your bids:</Text>
+            <CaretCollapsible text={"Your bids"} DropdownComponent={<UserBids bids={userBids} />} />
             {/* <UserBids bids={userBids} /> */}
         </SafeAreaView>
     )
