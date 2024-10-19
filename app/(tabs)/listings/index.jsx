@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { getUserListings } from '@/lib/appwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
@@ -18,11 +19,11 @@ const Listings = () => {
     return (
         <SafeAreaView className="bg-primary h-full">
             {/* Your posted listings */}
-            <Text className="font-rssemibold text-2xl color-mint">Your listings:</Text>
-            <OwnListings userListings={userListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} />
+            <Text className="font-rssemibold color-mint text-lg">Your listings:</Text>
+            {/* <OwnListings userListings={userListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} /> */}
             {/* Listings you've bid on */}
-            <Text className="font-rssemibold text-2xl color-mint">Your bids:</Text>
-            <UserBids bids={userBids} />
+            <Text className="font-rssemibold color-mint text-lg">Your bids:</Text>
+            {/* <UserBids bids={userBids} /> */}
         </SafeAreaView>
     )
 }

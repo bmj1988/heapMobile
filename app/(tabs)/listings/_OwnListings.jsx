@@ -1,4 +1,4 @@
-import { FlatList, Pressable } from "react-native"
+import { FlatList, Pressable, Text, View } from "react-native"
 import ListingCard from "@/components/ListingCard"
 import CustomButton from '@/components/CustomButton'
 
@@ -30,7 +30,7 @@ const OwnListings = ({ userListings, selectedListing, setSelectedListing }) => {
             keyExtractor={(item) => item.$id}
             renderItem={({ item }) => (
                 <Pressable onPress={() => setSelectedListing(item.$id)}>
-                    <ListingCard listing={item} selected={selectedListing && selectedListing === item.$id ? true : false} />
+                    <ListingCard listing={item} selected={selectedListing && selectedListing === item.$id} />
                     {selectedListing === item.$id &&
                         item.bids.map((bid) => <BidDisplay bid={bid} />)
                     }
