@@ -3,16 +3,19 @@ import React from 'react'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import CustomButton from '../../../components/CustomButton'
 import { Picker } from '@react-native-picker/picker'
+import { getUserLocations } from '@/lib/appwrite'
 
 
 const PostListingHeader = () => {
     const { user } = useGlobalContext()
     const [formOpen, setFormOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const { data: locations } = useAppwrite(() => getUserLocations(user.$id))
+
     const [form, setForm] = useState({
         images: [],
         details: '',
-        location: null,
+        location: {},
         askingPrice: "0",
         user: user.$id,
         tags: [],
@@ -27,8 +30,15 @@ const PostListingHeader = () => {
                 <View>
                     <View>
                         <Text>Location</Text>
-                        {/* Dropdown */}
-
+                        <Picker
+                            selectedValue={form.location}
+                            onValueChange={(itemValue, itemIndex) => setForm({ ...form, location: itemValue })}
+                        >
+                            {locations && locations.map((item) => {
+                                <Picker.Item key={item.$id} label={item.address} value={item.$id} />
+                            })}
+                            <Picker.Item key={0} label={"New location"} value={0} />
+                        </Picker>
                     </View>
                     <View>
                         <Text>Details</Text>
