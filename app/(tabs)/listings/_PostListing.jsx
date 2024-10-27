@@ -1,10 +1,11 @@
-import { View, Text, Pressable, TextInput } from 'react-native'
+import { View, Text, Pressable, TextInput, Image } from 'react-native'
 import React from 'react'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import CustomButton from '../../../components/CustomButton'
 import { Picker } from '@react-native-picker/picker'
-import { getUserLocations } from '@/lib/appwrite'
+import { getUserLocations, getAllTags } from '@/lib/appwrite'
 import * as ImagePicker from 'expo-image-picker'
+import { FontAwesome } from '@expo/vector-icons'
 
 
 const PostListingHeader = () => {
@@ -12,6 +13,7 @@ const PostListingHeader = () => {
     const [formOpen, setFormOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const { data: locations } = useAppwrite(() => getUserLocations(user.$id))
+    const { data: tags } = useAppwrite(() => getAllTags())
 
     const [form, setForm] = useState({
         images: [],
@@ -70,19 +72,43 @@ const PostListingHeader = () => {
                     </View>
 
                     <View>
+                        {/* Consider having this be a pressable that opens a modal to type details into */}
                         <Text>Details</Text>
                         <TextInput multiline={true} onChangeText={(details) => setForm({ ...form, details })} />
 
                     </View>
 
                     <View>
-                        <Text>Add Images</Text>
+                        <Text>Upload Images</Text>
                         {/* Expo native image picker */}
+                        <Pressable onPress={() => openPicker()}>
+                            <FontAwesome name={"upload"} color={"black"} size={20} />
+                        </Pressable>
+                        <View className="flex-row">
+                            {form.images.length > 0 && form.images.map((image) => {
+                                <Image
+                                    source={{ uri: image.uri }}
+                                    className="w-[64px] h-[64px] rounded-xl"
+                                    resizeMode='contain' />
+                            })
+                            }
+                        </View>
 
                     </View>
                     <View>
                         <Text>Tags</Text>
-                        {/* Dropdown */}
+                        <Picker
+                            selectedValue={form.location}
+                            onValueChange={(itemValue, itemIndex) => {
+                                if (form.tags.includes(itemValue)) return
+                                else setForm({ ...form, tags: [...form.tags, itemValue]})
+                            }}
+                        >
+                            {tags && tags.map((item) => {
+                                <Picker.Item key={item.$id} label={item.name} value={item.$id} />
+                            })}
+                            <Picker.Item key={0} label={"Add a tag"} value={0} />
+                        </Picker>
 
                     </View>
                     <CustomButton title={"Submit"} handlePress={() => postListing(form)} isLoading={isLoading} />
