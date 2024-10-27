@@ -1,4 +1,4 @@
-import { View, Text, Pressable, TextInput, Image } from 'react-native'
+import { View, Text, Pressable, TextInput, Image, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import CustomButton from '../../../components/CustomButton'
@@ -67,8 +67,8 @@ const PostListingHeader = () => {
                 <MaterialCommunityIcons name={'cube-send'} color={'#50bf88'} size={40} />
             </Pressable>
             {formOpen &&
-                <View>
-                    <View style={{ color: "#50bf88", flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 1, width: '50%' }}>
+                <View style={{ width: '90%' }}>
+                    <View style={{ color: "#50bf88", flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
                         <Text className="color-mint font-rsregular text-lg">Location</Text>
                         <Picker
                             dropdownIconColor="#50bf88"
@@ -81,32 +81,30 @@ const PostListingHeader = () => {
                             <Picker.Item key={0} label={"New location"} value={"new"} />
                         </Picker>
                     </View>
-                    <View style={{ color: "#50bf88", flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 1, width: '50%' }}>
+                    <View style={{ color: "#50bf88", flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 1, marginBottom: 10 }}>
                         <Text className="color-mint font-rsregular text-lg">Asking Price</Text>
                         {/* Number input consider "number-pad" as keyboardTyope value*/}
                         <TextInput className="bg-gray-100 rounded-sm color-black p-1"
-                        keyboardType={"numeric"}
-                        onFocus={() => setForm({ ...form, askingPrice: "" })}
-                        onTouchCancel={() => {
-                            if (form.askingPrice) return
-                            else setForm({...form, askingPrice: "Best Offer"})
-                        }} onChange={(askingPrice) => setForm({ ...form, askingPrice })} defaultValue='Best Offer' />
+                            keyboardType={"numeric"}
+                            onChange={(askingPrice) => setForm({ ...form, askingPrice })}
+                            placeholder='Best Offer' />
 
                     </View>
 
-                    <View>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                         {/* Consider having this be a pressable that opens a modal to type details into */}
                         <Text className="color-mint font-rsregular text-lg">Details</Text>
-                        <TextInput className="color-mint" multiline={true} onChangeText={(details) => setForm({ ...form, details })} />
+                        <TextInput className="color-black bg-gray-100 w-[90%] mb-1" numberOfLines={2} multiline={true} onChangeText={(details) => setForm({ ...form, details })} />
 
                     </View>
 
                     <View>
-                        <Text className="color-mint font-rsregular text-lg">Upload Images</Text>
-                        {/* Expo native image picker */}
-                        {/* <Pressable onPress={() => openPicker()}>
-                            <FontAwesome name={"upload"} color={"black"} size={20} />
-                        </Pressable>
+                        <View className="m-2 rounded-2xl border-solid border-mint border-[1px]">
+                            <Pressable className="flex-row justify-center items-center p-1" onPress={() => openPicker()}>
+                                <Text className="color-mint font-rsregular text-lg mr-2">Upload Images</Text>
+                                <FontAwesome name={"upload"} color={"#50bf88"} size={20} />
+                            </Pressable>
+                        </View>
                         <View className="flex-row">
                             {form.images.length > 0 && form.images.map((image) => {
                                 <Image
@@ -115,11 +113,14 @@ const PostListingHeader = () => {
                                     resizeMode='contain' />
                             })
                             }
-                        </View> */}
+                        </View>
 
                     </View>
                     <View>
-                        <Text className="color-mint font-rsregular text-lg">Tags</Text>
+                        <View className="flex-row justify-center items-center m-1 p-1 rounded-2xl border-solid border-mint border-[1px]">
+                            <Text className="color-mint font-rsregular text-lg mr-1">Add Tags</Text>
+                            <MaterialCommunityIcons name={"tag-plus-outline"} color={"#50bf88"} size={25} />
+                        </View>
                         {/* <Picker
                             selectedValue={form.location}
                             onValueChange={(itemValue, itemIndex) => {
@@ -134,7 +135,7 @@ const PostListingHeader = () => {
                         </Picker> */}
 
                     </View>
-                    <CustomButton title={"Submit"} handlePress={() => submit()} isLoading={isLoading} />
+                    <CustomButton title={"Submit"} handlePress={() => submit()} isLoading={isLoading} containerStyles={"m-2"}/>
                 </View>}
             <View>
 
