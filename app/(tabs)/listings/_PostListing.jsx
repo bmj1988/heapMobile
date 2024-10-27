@@ -1,11 +1,13 @@
 import { View, Text, Pressable, TextInput, Image } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import CustomButton from '../../../components/CustomButton'
 import { Picker } from '@react-native-picker/picker'
 import { getUserLocations, getAllTags, postListing } from '@/lib/appwrite'
 import * as ImagePicker from 'expo-image-picker'
-import { FontAwesome } from '@expo/vector-icons'
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
+import useAppwrite from '@/lib/useAppwrite'
+
 
 
 const PostListingHeader = () => {
@@ -59,9 +61,10 @@ const PostListingHeader = () => {
     }
 
     return (
-        <View className="w-[90%] bg-black-100 border-[1px] border-solid border-gray-100 justify-center items-center rounded-lg p-1 mb-5">
-            <Pressable onPress={() => setFormOpen(!formOpen)}>
-                <Text className="text-lg font-rssemibold color-mint">Post a Listing</Text>
+        <View className="max-w-auto bg-black-200 border-[1px] border-solid border-mint justify-center items-center rounded-lg p-1 m-1 mb-5">
+            <Pressable className="flex-row items-center justify-center gap-5" onPress={() => setFormOpen(!formOpen)}>
+                <Text className="text-2xl font-rssemibold color-mint">Post a Listing</Text>
+                <MaterialCommunityIcons name={'cube-send'} color={'#50bf88'} size={40} />
             </Pressable>
             {formOpen &&
                 <View>

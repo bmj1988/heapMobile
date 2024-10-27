@@ -9,6 +9,7 @@ import { getUserBids } from '@/lib/appwrite'
 import UserBids from './_UserBids'
 import CaretCollapsible from '../../../components/CaretCollapsible'
 import CustomModal from '../../../components/Modals/TestingDetailsModal'
+import PostListingHeader from './_PostListing'
 
 
 const Listings = () => {
@@ -21,6 +22,7 @@ const Listings = () => {
 
     return (
         <SafeAreaView className="bg-primary h-full">
+            <PostListingHeader />
             {/* Your posted listings */}
             <CaretCollapsible text={"Your listings"} DropdownComponent={<OwnListings userListings={userListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} />} />
             {/* Listings you've bid on */}
