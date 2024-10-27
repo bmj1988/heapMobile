@@ -68,34 +68,41 @@ const PostListingHeader = () => {
             </Pressable>
             {formOpen &&
                 <View>
-                    <View>
-                        <Text>Location</Text>
-                        {/* <Picker
-                            selectedValue={form.location}
+                    <View style={{ color: "#50bf88", flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 1, width: '50%' }}>
+                        <Text className="color-mint font-rsregular text-lg">Location</Text>
+                        <Picker
+                            dropdownIconColor="#50bf88"
+                            selectedValue={"new"}
                             onValueChange={(itemValue, itemIndex) => setForm({ ...form, location: itemValue })}
                         >
                             {locations && locations.map((item) => {
                                 <Picker.Item key={item.$id} label={item.address} value={item.$id} />
                             })}
-                            <Picker.Item key={0} label={"New location"} value={0} />
-                        </Picker> */}
+                            <Picker.Item key={0} label={"New location"} value={"new"} />
+                        </Picker>
                     </View>
-                    <View>
-                        <Text>Asking Price</Text>
+                    <View style={{ color: "#50bf88", flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 1, width: '50%' }}>
+                        <Text className="color-mint font-rsregular text-lg">Asking Price</Text>
                         {/* Number input consider "number-pad" as keyboardTyope value*/}
-                        {/* <TextInput keyboardType={"numeric"} onChange={(askingPrice) => setForm({ ...form, askingPrice })} defaultValue='Best Offer' /> */}
+                        <TextInput className="bg-gray-100 rounded-sm color-black p-1"
+                        keyboardType={"numeric"}
+                        onFocus={() => setForm({ ...form, askingPrice: "" })}
+                        onTouchCancel={() => {
+                            if (form.askingPrice) return
+                            else setForm({...form, askingPrice: "Best Offer"})
+                        }} onChange={(askingPrice) => setForm({ ...form, askingPrice })} defaultValue='Best Offer' />
 
                     </View>
 
                     <View>
                         {/* Consider having this be a pressable that opens a modal to type details into */}
-                        <Text>Details</Text>
-                        <TextInput multiline={true} onChangeText={(details) => setForm({ ...form, details })} />
+                        <Text className="color-mint font-rsregular text-lg">Details</Text>
+                        <TextInput className="color-mint" multiline={true} onChangeText={(details) => setForm({ ...form, details })} />
 
                     </View>
 
                     <View>
-                        <Text>Upload Images</Text>
+                        <Text className="color-mint font-rsregular text-lg">Upload Images</Text>
                         {/* Expo native image picker */}
                         {/* <Pressable onPress={() => openPicker()}>
                             <FontAwesome name={"upload"} color={"black"} size={20} />
@@ -112,7 +119,7 @@ const PostListingHeader = () => {
 
                     </View>
                     <View>
-                        <Text>Tags</Text>
+                        <Text className="color-mint font-rsregular text-lg">Tags</Text>
                         {/* <Picker
                             selectedValue={form.location}
                             onValueChange={(itemValue, itemIndex) => {
