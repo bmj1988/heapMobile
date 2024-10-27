@@ -3,7 +3,7 @@ import React from 'react'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import CustomButton from '../../../components/CustomButton'
 import { Picker } from '@react-native-picker/picker'
-import { getUserLocations, getAllTags } from '@/lib/appwrite'
+import { getUserLocations, getAllTags, postListing } from '@/lib/appwrite'
 import * as ImagePicker from 'expo-image-picker'
 import { FontAwesome } from '@expo/vector-icons'
 
@@ -44,6 +44,19 @@ const PostListingHeader = () => {
             }, 100)
         }
     }
+    // ideally would animate some kind of check mark or success indicator
+    const submit = async () => {
+        const listing = postListing(form)
+        setForm({
+            images: [],
+            details: '',
+            location: {},
+            askingPrice: "0",
+            user: user.$id,
+            tags: [],
+        })
+        setFormOpen(false)
+    }
 
     return (
         <View className="w-[90%] bg-black-100 border-[1px] border-solid border-gray-100 justify-center items-center rounded-lg p-1 mb-5">
@@ -54,7 +67,7 @@ const PostListingHeader = () => {
                 <View>
                     <View>
                         <Text>Location</Text>
-                        <Picker
+                        {/* <Picker
                             selectedValue={form.location}
                             onValueChange={(itemValue, itemIndex) => setForm({ ...form, location: itemValue })}
                         >
@@ -62,12 +75,12 @@ const PostListingHeader = () => {
                                 <Picker.Item key={item.$id} label={item.address} value={item.$id} />
                             })}
                             <Picker.Item key={0} label={"New location"} value={0} />
-                        </Picker>
+                        </Picker> */}
                     </View>
                     <View>
                         <Text>Asking Price</Text>
                         {/* Number input consider "number-pad" as keyboardTyope value*/}
-                        <TextInput keyboardType={"numeric"} onChange={(askingPrice) => setForm({ ...form, askingPrice })} defaultValue='Best Offer' />
+                        {/* <TextInput keyboardType={"numeric"} onChange={(askingPrice) => setForm({ ...form, askingPrice })} defaultValue='Best Offer' /> */}
 
                     </View>
 
@@ -81,7 +94,7 @@ const PostListingHeader = () => {
                     <View>
                         <Text>Upload Images</Text>
                         {/* Expo native image picker */}
-                        <Pressable onPress={() => openPicker()}>
+                        {/* <Pressable onPress={() => openPicker()}>
                             <FontAwesome name={"upload"} color={"black"} size={20} />
                         </Pressable>
                         <View className="flex-row">
@@ -92,12 +105,12 @@ const PostListingHeader = () => {
                                     resizeMode='contain' />
                             })
                             }
-                        </View>
+                        </View> */}
 
                     </View>
                     <View>
                         <Text>Tags</Text>
-                        <Picker
+                        {/* <Picker
                             selectedValue={form.location}
                             onValueChange={(itemValue, itemIndex) => {
                                 if (form.tags.includes(itemValue)) return
@@ -108,10 +121,10 @@ const PostListingHeader = () => {
                                 <Picker.Item key={item.$id} label={item.name} value={item.$id} />
                             })}
                             <Picker.Item key={0} label={"Add a tag"} value={0} />
-                        </Picker>
+                        </Picker> */}
 
                     </View>
-                    <CustomButton title={"Submit"} handlePress={() => postListing(form)} isLoading={isLoading} />
+                    <CustomButton title={"Submit"} handlePress={() => submit()} isLoading={isLoading} />
                 </View>}
             <View>
 
