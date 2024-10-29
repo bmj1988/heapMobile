@@ -16,6 +16,7 @@ const PostListingHeader = () => {
     const [isLoading, setIsLoading] = useState(false)
     const { data: locations } = useAppwrite(() => getUserLocations(user.$id))
     const { data: tags } = useAppwrite(() => getAllTags())
+    const [selectedLanguage, setSelectedLanguage] = useState("js")
 
     const [form, setForm] = useState({
         images: [],
@@ -52,7 +53,7 @@ const PostListingHeader = () => {
         setForm({
             images: [],
             details: '',
-            location: {},
+            location: "new",
             askingPrice: "0",
             user: user.$id,
             tags: [],
@@ -68,15 +69,16 @@ const PostListingHeader = () => {
             </Pressable>
             {formOpen &&
                 <View style={{ width: '90%' }}>
-                    <View style={{ color: "#50bf88", flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
+                    <View style={{ color: "#50bf88", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', gap: 1 }}>
                         <Text className="color-mint font-rsregular text-lg">Location</Text>
                         <Picker
                             dropdownIconColor="#50bf88"
                             selectedValue={"new"}
-                            onValueChange={(itemValue, itemIndex) => setForm({ ...form, location: itemValue })}
+                            onValueChange={(itemValue) => setForm({ ...form, location: itemValue })}
+                            style={{ height: 50, width: 50 }}
                         >
-                            {locations && locations.map((item) => {
-                                <Picker.Item key={item.$id} label={item.address} value={item.$id} />
+                            {locations.length > 0 && locations.map((location) => {
+                                <Picker.Item key={location.$id} label={location.address} value={location.$id} />
                             })}
                             <Picker.Item key={0} label={"New location"} value={"new"} />
                         </Picker>
@@ -122,7 +124,7 @@ const PostListingHeader = () => {
                             <MaterialCommunityIcons name={"tag-plus-outline"} color={"#50bf88"} size={25} />
                         </View>
                         {/* <Picker
-                            selectedValue={form.location}
+                            selectedValue={tags[0].$id || "0"}
                             onValueChange={(itemValue, itemIndex) => {
                                 if (form.tags.includes(itemValue)) return
                                 else setForm({ ...form, tags: [...form.tags, itemValue]})
@@ -135,7 +137,7 @@ const PostListingHeader = () => {
                         </Picker> */}
 
                     </View>
-                    <CustomButton title={"Submit"} handlePress={() => submit()} isLoading={isLoading} containerStyles={"m-2"}/>
+                    <CustomButton title={"Submit"} handlePress={() => submit()} isLoading={isLoading} containerStyles={"m-2"} />
                 </View>}
             <View>
 
