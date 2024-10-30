@@ -1,27 +1,28 @@
-import { View, Text, Pressable, TextInput, Image, Alert } from 'react-native'
+import { View, Text, Pressable, TextInput, Image, Alert, KeyboardAvoidingView } from 'react-native'
 import React, { useState } from 'react'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import CustomButton from '../../../components/CustomButton'
-import { Picker } from '@react-native-picker/picker'
-import { getUserLocations, getAllTags, postListing } from '@/lib/appwrite'
+import { getAllTags, postListing } from '@/lib/appwrite'
 import * as ImagePicker from 'expo-image-picker'
-import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
+import { FontAwesome, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons'
 import useAppwrite from '@/lib/useAppwrite'
-
+import LocationPicker from '../../../components/Modals/PostListingHeaderLocationPicker'
+import keyboardOpen from '../../../hooks/keyboardOpen'
 
 
 const PostListingHeader = () => {
     const { user } = useGlobalContext()
     const [formOpen, setFormOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const { data: locations } = useAppwrite(() => getUserLocations(user.$id))
+    const [modalVisible, setModalVisible] = useState(false)
     const { data: tags } = useAppwrite(() => getAllTags())
-    const [selectedLanguage, setSelectedLanguage] = useState("js")
-
+    const locations = [...user.locations, { address: "New Location", city: "", state: "", $id: 0 }]
+    const [currentLocation, setCurrentLocation] = useState(locations[0])
+    const isKeyboardOpen = keyboardOpen();
     const [form, setForm] = useState({
         images: [],
         details: '',
-        location: {},
+        location: { address: "", city: "", state: "", $id: 0 },
         askingPrice: "0",
         user: user.$id,
         tags: [],
@@ -47,13 +48,25 @@ const PostListingHeader = () => {
             }, 100)
         }
     }
+
+
     // ideally would animate some kind of check mark or success indicator
     const submit = async () => {
-        const listing = postListing(form)
+        console.log(form)
+        if (!currentLocation.$id) {
+            // locationDetails = {...form.location}
+            // let newLocation = createLocation(locationDetails)
+            // setCurrentLocation(newLocation)
+            // create new location flag or method
+        }
+        // if (!form.askingPrice) form.askingPrice = "0"
+        // createListing({...form, askingPrice: toString(form.askingPrice)})
+        // AppWrite create new listing handles image upload and databasing
+
         setForm({
             images: [],
             details: '',
-            location: "new",
+            location: currentLocation.$id,
             askingPrice: "0",
             user: user.$id,
             tags: [],
@@ -63,32 +76,37 @@ const PostListingHeader = () => {
 
     return (
         <View className="max-w-auto bg-black-200 border-[1px] border-solid border-mint justify-center items-center rounded-lg p-1 m-1 mb-5">
-            <Pressable className="flex-row items-center justify-center gap-5" onPress={() => setFormOpen(!formOpen)}>
+            <Pressable className={`flex-row items-center justify-center gap-5 ${isKeyboardOpen ? "hidden" : ""}`} onPress={() => setFormOpen(!formOpen)}>
                 <Text className="text-2xl font-rssemibold color-mint">Post a Listing</Text>
                 <MaterialCommunityIcons name={'cube-send'} color={'#50bf88'} size={40} />
             </Pressable>
             {formOpen &&
                 <View style={{ width: '90%' }}>
-                    <View style={{ color: "#50bf88", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', gap: 1 }}>
+                    <View style={{ color: "#50bf88", flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 1, marginBottom: 10 }}>
                         <Text className="color-mint font-rsregular text-lg">Location</Text>
-                        <Picker
-                            dropdownIconColor="#50bf88"
-                            selectedValue={"new"}
-                            onValueChange={(itemValue) => setForm({ ...form, location: itemValue })}
-                            style={{ height: 50, width: 50 }}
-                        >
-                            {locations.length > 0 && locations.map((location) => {
-                                <Picker.Item key={location.$id} label={location.address} value={location.$id} />
-                            })}
-                            <Picker.Item key={0} label={"New location"} value={"new"} />
-                        </Picker>
+                        <Pressable onPress={() => setModalVisible(true)} className="gap-1 flex-row items-center">
+                            <Text className="color-mint font-rsregular text-lg underline">{currentLocation.address}</Text>
+                            <Ionicons name="location-outline" color="#50bf88" size={20} />
+                        </Pressable>
                     </View>
+                    {currentLocation.address === "New Location" && <View style={{ color: "#50bf88", flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 1, marginBottom: 10 }}>
+                        <TextInput className="bg-gray-100 rounded-sm color-black p-1 w-[40%]"
+                            placeholder='Street Address'
+                            onChangeText={(e) => setForm({ ...form, location: { ...form.location, address: e } })} />
+                        <TextInput className="bg-gray-100 rounded-sm color-black p-1 w-[35%]"
+                            placeholder='City'
+                            onChangeText={(e) => setForm({ ...form, location: { ...form.location, city: e } })} />
+                        <TextInput className="bg-gray-100 rounded-sm color-black p-1 w-[12%]"
+                            placeholder='State'
+                            maxLength={2}
+                            onChangeText={(e) => setForm({ ...form, location: { ...form.location, state: e } })} />
+                    </View>}
                     <View style={{ color: "#50bf88", flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 1, marginBottom: 10 }}>
                         <Text className="color-mint font-rsregular text-lg">Asking Price</Text>
                         {/* Number input consider "number-pad" as keyboardTyope value*/}
                         <TextInput className="bg-gray-100 rounded-sm color-black p-1"
                             keyboardType={"numeric"}
-                            onChange={(askingPrice) => setForm({ ...form, askingPrice })}
+                            onChangeText={(askingPrice) => setForm({ ...form, askingPrice })}
                             placeholder='Best Offer' />
 
                     </View>
@@ -137,12 +155,12 @@ const PostListingHeader = () => {
                         </Picker> */}
 
                     </View>
-                    <CustomButton title={"Submit"} handlePress={() => submit()} isLoading={isLoading} containerStyles={"m-2"} />
+                    <CustomButton title={"Submit"} handlePress={() => submit()} isLoading={isLoading || !form.location.address || !form.location.city || !form.location.state } containerStyles={"m-2"} />
                 </View>}
             <View>
 
             </View>
-
+            <LocationPicker setLocation={setCurrentLocation} currentLocation={currentLocation} locationsList={locations} closeModal={() => setModalVisible(false)} visible={modalVisible} />
         </View>
 
     )

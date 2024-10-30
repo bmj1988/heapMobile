@@ -1,4 +1,4 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text } from 'react-native'
 import { Tabs } from 'expo-router'
 import { FontAwesome } from '@expo/vector-icons'
 // import { cubes, envelope, user, home } from "@expo/vector-icons/FontAwesome"
@@ -7,7 +7,7 @@ import TabsHeader from '../../components/TabsHeader'
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
     <View className="items-center justify-center gap-2">
-      <FontAwesome name={icon} color={color} size={20}/>
+      <FontAwesome name={icon} color={color} size={20} />
       <Text className={`${focused ? 'font-psemibold' : 'font-pregular'} text-xs`} style={{ color: color }}>
         {name}
       </Text>
@@ -24,6 +24,7 @@ const TabsLayout = () => {
           tabBarActiveTintColor: '#50bf88',
           tabBarInactiveTintColor: '#CDCDE0',
           headerShown: true,
+          tabBarHideOnKeyboard: true,
           header: () => <TabsHeader />,
           tabBarStyle: {
             backgroundColor: '#161622',

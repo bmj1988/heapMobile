@@ -6,8 +6,8 @@ import AccountDropdownMenu from './AccountDropdownMenu'
 
 const TabsHeader = () => {
     return (
-        <SafeAreaView className="bg-primary pb-5">
-            <View className="flex-row h-12 w-full items-center justify-between mt-5">
+        <SafeAreaView className="bg-primary">
+            <View className="flex-row h-12 w-full items-center justify-between mt-[5px]">
                 <Image source={images.diamondPlate} className="h-10 w-10 px-4 ml-5" resizeMode='contain'/>
                 <SearchInput />
                 <AccountDropdownMenu />
