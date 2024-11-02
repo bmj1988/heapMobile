@@ -2,7 +2,7 @@ import { View, Text, Pressable, TextInput, Image, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import CustomButton from '../../../components/CustomButton'
-import { getAllTags, postListing } from '@/lib/appwrite'
+import { getAllTags, postListing, createLocation } from '@/lib/appwrite'
 import * as ImagePicker from 'expo-image-picker'
 import { FontAwesome, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons'
 import useAppwrite from '@/lib/useAppwrite'
@@ -11,7 +11,7 @@ import keyboardOpen from '../../../hooks/keyboardOpen'
 import TagSelectionModal from '../../../components/Modals/TagSelectionModal'
 
 
-const PostListingHeader = () => {
+const PostListingHeader = ({ refetch }) => {
     const { user } = useGlobalContext()
     const [formOpen, setFormOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -47,16 +47,21 @@ const PostListingHeader = () => {
 
     // ideally would animate some kind of check mark or success indicator
     const submit = async () => {
-        console.log(form)
+        setIsLoading(true)
+        let newListing = { ...form }
+
         if (!currentLocation.$id) {
-            // locationDetails = {...form.location}
-            // let newLocation = createLocation(locationDetails)
-            // setCurrentLocation(newLocation)
-            // create new location flag or method
+            let newLocation = await createLocation({ ...form.location })
+            newListing.location = newLocation
         }
-        // if (!form.askingPrice) form.askingPrice = "0"
-        // createListing({...form, askingPrice: toString(form.askingPrice)})
-        // AppWrite create new listing handles image upload and databasing
+        else newListing.location = currentLocation.$id
+
+        if (!newListing.askingPrice) newListing.askingPrice = "0"
+        else newListing.askingPrice = newListing.askingPrice.toString()
+        console.log("!!! LISTING BEFORE APPWRITE", newListing)
+        const successful = await postListing(newListing)
+        await refetch()
+        setIsLoading(false)
 
         setForm({
             images: [],

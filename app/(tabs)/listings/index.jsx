@@ -22,7 +22,7 @@ const Listings = () => {
 
     return (
         <SafeAreaView className="bg-primary h-full">
-            <PostListingHeader />
+            <PostListingHeader refetch={() => refetch()} />
             {/* Your posted listings */}
             <CaretCollapsible text={"Your listings"} DropdownComponent={<OwnListings userListings={userListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} />} />
             {/* Listings you've bid on */}
