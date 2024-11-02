@@ -1,4 +1,4 @@
-import { View, Text, Pressable, TextInput, Image, Alert, KeyboardAvoidingView } from 'react-native'
+import { View, Text, Pressable, TextInput, Image, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import CustomButton from '../../../components/CustomButton'
@@ -8,6 +8,7 @@ import { FontAwesome, MaterialCommunityIcons, Ionicons } from '@expo/vector-icon
 import useAppwrite from '@/lib/useAppwrite'
 import LocationPicker from '../../../components/Modals/PostListingHeaderLocationPicker'
 import keyboardOpen from '../../../hooks/keyboardOpen'
+import TagSelectionModal from '../../../components/Modals/TagSelectionModal'
 
 
 const PostListingHeader = () => {
@@ -15,6 +16,7 @@ const PostListingHeader = () => {
     const [formOpen, setFormOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
+    const [tagModalVisible, setTagModalVisible] = useState(false)
     const { data: tags } = useAppwrite(() => getAllTags())
     const locations = [...user.locations, { address: "New Location", city: "", state: "", $id: 0 }]
     const [currentLocation, setCurrentLocation] = useState(locations[0])
@@ -27,7 +29,6 @@ const PostListingHeader = () => {
         user: user.$id,
         tags: [],
     })
-
     const openPicker = async () => {
         const result = await ImagePicker.launchImageLibraryAsync(
             {
@@ -42,13 +43,7 @@ const PostListingHeader = () => {
         if (!result.canceled) {
             setForm({ ...form, images: result.assets })
         }
-        else {
-            setTimeout(() => {
-                Alert.alert('Document picked', JSON.stringify(result, null, 2))
-            }, 100)
-        }
     }
-
 
     // ideally would animate some kind of check mark or success indicator
     const submit = async () => {
@@ -121,7 +116,7 @@ const PostListingHeader = () => {
                     <View>
                         <View className="m-2 rounded-2xl border-solid border-mint border-[1px]">
                             <Pressable className="flex-row justify-center items-center p-1" onPress={() => openPicker()}>
-                                <Text className="color-mint font-rsregular text-lg mr-2">Upload Images</Text>
+                                <Text className="color-mint font-rsregular text-lg mr-2">{`${form.images.length > 0 ? "Change" : "Upload"} Images`}</Text>
                                 <FontAwesome name={"upload"} color={"#50bf88"} size={20} />
                             </Pressable>
                         </View>
@@ -137,30 +132,19 @@ const PostListingHeader = () => {
 
                     </View>
                     <View>
-                        <View className="flex-row justify-center items-center m-1 p-1 rounded-2xl border-solid border-mint border-[1px]">
-                            <Text className="color-mint font-rsregular text-lg mr-1">Add Tags</Text>
+                        <Pressable onPress={() => setTagModalVisible(true)} className="flex-row justify-center items-center m-1 p-1 rounded-2xl border-solid border-mint border-[1px]">
+                            <Text className="color-mint font-rsregular text-lg mr-1">{`${form.tags.length > 0 ? "Edit" : "Add"} Tags`}</Text>
                             <MaterialCommunityIcons name={"tag-plus-outline"} color={"#50bf88"} size={25} />
-                        </View>
-                        {/* <Picker
-                            selectedValue={tags[0].$id || "0"}
-                            onValueChange={(itemValue, itemIndex) => {
-                                if (form.tags.includes(itemValue)) return
-                                else setForm({ ...form, tags: [...form.tags, itemValue]})
-                            }}
-                        >
-                            {tags && tags.map((item) => {
-                                <Picker.Item key={item.$id} label={item.name} value={item.$id} />
-                            })}
-                            <Picker.Item key={0} label={"Add a tag"} value={0} />
-                        </Picker> */}
+                        </Pressable>
 
                     </View>
-                    <CustomButton title={"Submit"} handlePress={() => submit()} isLoading={isLoading || !form.location.address || !form.location.city || !form.location.state } containerStyles={"m-2"} />
+                    <CustomButton title={"Submit"} handlePress={() => submit()} isLoading={isLoading || !form.location.address || !form.location.city || !form.location.state} containerStyles={"m-2"} />
                 </View>}
             <View>
 
             </View>
             <LocationPicker setLocation={setCurrentLocation} currentLocation={currentLocation} locationsList={locations} closeModal={() => setModalVisible(false)} visible={modalVisible} />
+            <TagSelectionModal visible={tagModalVisible} closeModal={() => setTagModalVisible(false)} form={form} setForm={setForm} tagList={tags} currentTags={form.tags} />
         </View>
 
     )
