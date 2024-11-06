@@ -10,5 +10,4 @@ the idea right now is to use event driven architecture through AWS to log everyt
 
 ### Open Known Issues
 
-1) Modal not centering
-2) Text in modal showing up outside of modal
+1) Using appwrite atm but eventually createLocation should construct some sort of coordinate to be used for distance matching. Probably have to request long/lat from google.places or find some other library. This is the only issue that really dissuades me from event driven architecture as I feel like calculating distance for every listing in the feed (paginated) is best left to a backend, and may get costly if I'm using APIs.
