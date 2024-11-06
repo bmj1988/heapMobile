@@ -24,7 +24,7 @@ const OwnListings = ({ userListings, selectedListing, setSelectedListing }) => {
 
     return (
         <FlatList
-            className="max-h-[250px] w-[90%] m-5"
+            style={{marginLeft: 20, marginTop: 10, maxHeight: (userListings.length*90), width: "90%"}}
             contentContainerStyle={{ justifyContent: 'center' }}
             data={userListings}
             keyExtractor={(item) => item.$id}

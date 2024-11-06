@@ -6,7 +6,7 @@ import { router } from 'expo-router'
 const UserBids = ({ bids, setSelected, selected }) => {
     return (
         <FlatList
-            className="max-h-[250px] w-[90%] m-5"
+            style={{ marginLeft: 20, marginTop: 10, maxHeight: (bids.length * 90), width: "90%" }}
             contentContainerStyle={{ justifyContent: 'center' }}
             data={bids}
             keyExtractor={(item) => item.$id}
