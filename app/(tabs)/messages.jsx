@@ -2,6 +2,7 @@ import { View, Text } from 'react-native'
 import React, { useEffect } from 'react'
 import CaretCollapsible from '../../components/CaretCollapsible'
 import { getUserInbox, getUserOutbox } from '../../lib/appwrite'
+import MessageModal from '../../components/Modals/MessageModal'
 
 const Messaging = () => {
   const { user, page } = useGlobalContext()
@@ -16,7 +17,7 @@ const Messaging = () => {
       <Text>Messaging</Text>
       <CaretCollapsible text={`Inbox`} DropdownComponent={<Mailbox messages={inbox} setSelected={setSelectedMessage} setVisible={() => setModalVisible(true)} />} />
       <CaretCollapsible text={"Sent"} DropdownComponent={<Mailbox messages={outbox} />} />
-      {/* <MessageModal message={selectedMessage} visible={modalVisible} close={() => setModalVisible(false)} /> */}
+      <MessageModal user={user} message={selectedMessage} visible={modalVisible} close={() => setModalVisible(false)} />
     </View>
   )
 }
