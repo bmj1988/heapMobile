@@ -2,9 +2,7 @@ import { View, Text, Pressable, FlatList } from 'react-native'
 import React from 'react'
 import EmptyState from './EmptyState'
 
-const Mailbox = ({ messages }) => {
-    const [modalVisible, setModalVisible] = useState(false)
-    const [selected, setSelected] = useState({})
+const Mailbox = ({ messages, setSelected, setVisible }) => {
     return (
         <FlatList
             data={messages}
@@ -12,7 +10,7 @@ const Mailbox = ({ messages }) => {
             renderItem={({ item }) => (
                 <Pressable onPress={() => {
                     setSelected(item)
-                    setModalVisible(true)
+                    setVisible()
                 }}>
                     <View style={{ display: 'flex', flexDirection: 'row' }} className="rounded-xl bg-black-100 h-fit w-[90%]">
                         <Text numberOfLines={1} className={`text-md color-mint ${item.seen ? 'font-rsregular' : 'font-rsbold'}`}>{item.sender.username}</Text>
@@ -26,7 +24,6 @@ const Mailbox = ({ messages }) => {
             )
             }
         >
-            <MessageModal message={selected} visible={modalVisible} close={() => setModalVisible(false)} />
         </FlatList>
     )
 
