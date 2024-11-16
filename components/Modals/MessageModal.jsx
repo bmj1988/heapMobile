@@ -3,7 +3,7 @@ import React from 'react'
 
 const MessageModal = ({ message, visible, close, user }) => {
 
-    const currentUserIsSender = message.sender.$id === user.$id ? true : false
+    const currentUserIsSender = message.sender && message.sender.$id === user.$id ? true : false
 
     return (
         <Modal

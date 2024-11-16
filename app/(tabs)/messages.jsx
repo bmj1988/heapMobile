@@ -1,8 +1,11 @@
 import { View, Text } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import CaretCollapsible from '../../components/CaretCollapsible'
 import { getUserInbox, getUserOutbox } from '../../lib/appwrite'
 import MessageModal from '../../components/Modals/MessageModal'
+import { useGlobalContext } from '@/context/GlobalProvider'
+import useAppwrite from '../../lib/useAppwrite'
+import Mailbox from '../../components/Mailbox'
 
 const Messaging = () => {
   const { user, page } = useGlobalContext()
