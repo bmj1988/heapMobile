@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, SafeAreaView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import CaretCollapsible from '../../components/CaretCollapsible'
 import { getUserInbox, getUserOutbox } from '../../lib/appwrite'
@@ -16,12 +16,12 @@ const Messaging = () => {
   const { data: outbox } = useAppwrite(() => getUserOutbox(user.$id))
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} className="bg-primary">
       <Text>Messaging</Text>
       <CaretCollapsible text={`Inbox`} DropdownComponent={<Mailbox messages={inbox} setSelected={setSelectedMessage} setVisible={() => setModalVisible(true)} />} />
       <CaretCollapsible text={"Sent"} DropdownComponent={<Mailbox messages={outbox} />} />
       <MessageModal user={user} message={selectedMessage} visible={modalVisible} close={() => setModalVisible(false)} />
-    </View>
+    </SafeAreaView>
   )
 }
 
