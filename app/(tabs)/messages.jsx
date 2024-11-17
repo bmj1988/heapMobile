@@ -19,7 +19,7 @@ const Messaging = () => {
     <SafeAreaView style={{ flex: 1 }} className="bg-primary">
       <Text>Messaging</Text>
       <CaretCollapsible text={`Inbox`} DropdownComponent={<Mailbox messages={inbox} setSelected={setSelectedMessage} setVisible={() => setModalVisible(true)} />} />
-      <CaretCollapsible text={"Sent"} DropdownComponent={<Mailbox messages={outbox} />} />
+      <CaretCollapsible text={"Sent"} DropdownComponent={<Mailbox messages={outbox} setSelected={setSelectedMessage} setVisible={() => setModalVisible(true)}  />} />
       <MessageModal user={user} message={selectedMessage} visible={modalVisible} close={() => setModalVisible(false)} />
     </SafeAreaView>
   )
