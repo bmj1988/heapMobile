@@ -1,8 +1,7 @@
 import { View, Text, Modal, Pressable, TextInput } from 'react-native'
 import React, { useState } from 'react'
-import { FontAwesome } from '@expo/vector-icons'
 import CustomButton from '../CustomButton'
-import useAppwrite from '../../lib/useAppwrite'
+import { sendMessage } from '../../lib/appwrite'
 
 
 const MessageModal = ({ message, visible, close, user }) => {
@@ -16,7 +15,9 @@ const MessageModal = ({ message, visible, close, user }) => {
             sender: message.recipient.$id,
             recipient: message.sender.$id,
         }
-        useAppwrite(sendMessage(newMessage))
+        let response = sendMessage(newMessage)
+        console.log(response)
+        close()
     }
 
     return (
