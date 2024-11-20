@@ -36,7 +36,7 @@ const MessageModal = ({ message, visible, close, user }) => {
                     {sendReply && <TextInput
                         multiline={true}
                         numberOfLines={3}
-                        style={{ backgroundColor: "#EEEEEE", width: "90%", height: 40, marginBottom: 30 }}
+                        style={{ backgroundColor: "#EEEEEE", width: "90%", height: 40, marginBottom: 30, padding: 5 }}
                         className="rounded-lg font-rsregular"
                         onChangeText={(e) => setReply(e)}
                         placeholder='Type your reply here' />}

@@ -28,7 +28,7 @@ const Home = () => {
   return (
     <SafeAreaView className="bg-primary h-full">
       <FlatList
-        className={"h-full w-full m-5"}
+        className={"h-full w-full mr-5 ml-5 mb-5"}
         contentContainerStyle={{ justifyContent: 'center' }}
         data={listings}
         keyExtractor={(item) => item.$id}

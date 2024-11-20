@@ -16,11 +16,12 @@ const Messaging = () => {
   const { data: outbox } = useAppwrite(() => getUserOutbox(user.$id))
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="bg-primary">
-      <Text>Messaging</Text>
-      <CaretCollapsible text={`Inbox`} DropdownComponent={<Mailbox messages={inbox} setSelected={setSelectedMessage} setVisible={() => setModalVisible(true)} />} />
-      <CaretCollapsible text={"Sent"} DropdownComponent={<Mailbox messages={outbox} setSelected={setSelectedMessage} setVisible={() => setModalVisible(true)} sent={true} />} />
-      <MessageModal user={user} message={selectedMessage} visible={modalVisible} close={() => setModalVisible(false)} />
+    <SafeAreaView style={{ flex: 1 }} className="bg-primary p-1">
+      <View className="mt-8">
+        <CaretCollapsible text={`Inbox`} DropdownComponent={<Mailbox messages={inbox} setSelected={setSelectedMessage} setVisible={() => setModalVisible(true)} />} />
+        <CaretCollapsible text={"Sent"} DropdownComponent={<Mailbox messages={outbox} setSelected={setSelectedMessage} setVisible={() => setModalVisible(true)} sent={true} />} />
+        <MessageModal user={user} message={selectedMessage} visible={modalVisible} close={() => setModalVisible(false)} />
+      </View>
     </SafeAreaView>
   )
 }

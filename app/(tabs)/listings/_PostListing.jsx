@@ -75,7 +75,7 @@ const PostListingHeader = ({ refetch }) => {
     }
 
     return (
-        <View className="max-w-auto bg-black-200 border-[1px] border-solid border-mint justify-center items-center rounded-lg p-1 m-1 mb-5">
+        <View className="max-w-auto bg-black-200 border-[1px] border-solid border-mint justify-center items-center rounded-lg p-1 mr-1 ml-1 mb-5">
             <Pressable className={`flex-row items-center justify-center gap-5 ${isKeyboardOpen ? "hidden" : ""}`} onPress={() => setFormOpen(!formOpen)}>
                 <Text className="text-2xl font-rssemibold color-mint">Post a Listing</Text>
                 <MaterialCommunityIcons name={'cube-send'} color={'#50bf88'} size={40} />
