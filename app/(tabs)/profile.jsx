@@ -13,7 +13,7 @@ const Profile = () => {
         <Text>{userData.listings.length}</Text>
         {/* <Text>{userData.ratingAverage} {`( ${userData.numRatings} )`}*/}
         {/* user can set area, or more than one area (max 2) for the day {user.area} */}
-        {/* user.profile */}
+        <Text>{userData.blurb}</Text>
       </View>
     </SafeAreaView>
   )
