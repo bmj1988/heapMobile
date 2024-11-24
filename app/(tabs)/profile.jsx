@@ -10,11 +10,17 @@ const Profile = () => {
       <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Image className="w-[60%] rounded-2xl" source={{ uri: user.avatar }} />
       </View>
-      <View>
-        <Text>{userData.listings.length}</Text>
-        <Text>{`Average Rating ${averageRating}`} </Text>
-        <Text>{`Num reviews ${totalReviews}`}</Text>
-        <Text>Location: </Text>
+      <View style={{justifyContent: "space-between"}}>
+        <View>
+          <Text>{userData.listings.length}</Text>
+          <Text>Location: </Text>
+        </View>
+        <View>
+          <Text>{`Average Rating ${averageRating}`} </Text>
+          <Text>{`Num reviews ${totalReviews}`}</Text>
+        </View>
+      </View>
+      <View className="display-flex justify-center items-center">
         <Text>{userData.blurb}</Text>
       </View>
     </SafeAreaView>
