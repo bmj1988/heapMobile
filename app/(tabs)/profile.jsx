@@ -4,7 +4,7 @@ import { getReviews } from '../../lib/appwrite'
 
 const Profile = () => {
   const { user, page } = useGlobalContext()
-  const userData = useAppwrite(() => getReviews(user.$id))
+  const [totalReviews, averageRating] = useAppwrite(() => getReviews(user.$id))
   return (
     <SafeAreaView>
       <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -12,8 +12,9 @@ const Profile = () => {
       </View>
       <View>
         <Text>{userData.listings.length}</Text>
-        {/* <Text>{userData.ratingAverage} {`( ${userData.numRatings} )`}*/}
-        {/* user can set area, or more than one area (max 2) for the day {user.area} */}
+        <Text>{`Average Rating ${averageRating}`} </Text>
+        <Text>{`Num reviews ${totalReviews}`}</Text>
+        <Text>Location: </Text>
         <Text>{userData.blurb}</Text>
       </View>
     </SafeAreaView>
