@@ -1,9 +1,10 @@
 import { View, Text, SafeAreaView, Image } from 'react-native'
 import React from 'react'
+import { getReviews } from '../../lib/appwrite'
 
 const Profile = () => {
   const { user, page } = useGlobalContext()
-  // const userData = useAppwrite(fetchReviewData(user.$id))
+  const userData = useAppwrite(() => getReviews(user.$id))
   return (
     <SafeAreaView>
       <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
