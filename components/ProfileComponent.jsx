@@ -1,7 +1,11 @@
 import { View, Text, SafeAreaView, Image } from 'react-native'
-// import { getReviews } from '../../lib/appwrite'
-// const [totalReviews, averageRating] = useAppwrite(() => getReviews(user.$id))
+import { getReviews } from '../lib/appwrite'
+import useAppwrite from '../lib/useAppwrite'
+
 const ProfileComponent = ({ user }) => {
+    const result = useAppwrite(() => getReviews(user.$id))
+    const [totalReviews, averageRating] = result.data
+
     return (
         <SafeAreaView className="bg-primary h-full">
             <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -14,8 +18,8 @@ const ProfileComponent = ({ user }) => {
                 </View>
                 <View>
                     <Text className="color-mint font-rsregular">{`Joined ${new Date(user.$createdAt).toLocaleDateString()}`}</Text>
-                    {/* <Text>{`Average Rating ${averageRating}`} </Text>
-            <Text>{`Num reviews ${totalReviews}`}</Text> */}
+                    <Text className="color-mint font-rsregular">{`Average Rating ${averageRating}`} </Text>
+            <Text className="color-mint font-rsregular">{`${totalReviews} ${totalReviews === 1 ? 'Review' : 'Reviews'}`}</Text>
                 </View>
             </View>
             <View className="display-flex justify-center items-center m-5">
