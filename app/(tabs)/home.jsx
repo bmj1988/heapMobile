@@ -1,5 +1,5 @@
-import { RefreshControl, FlatList, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import { RefreshControl, FlatList, Pressable, Text } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import useAppwrite from '../../lib/useAppwrite'
 import { getAllListings } from '../../lib/appwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
@@ -8,15 +8,38 @@ import ListingCard from '../../components/ListingCard'
 import EmptyState from '../../components/EmptyState'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
+import * as Location from 'expo-location'
 
 
 const Home = () => {
   const { user, page } = useGlobalContext()
   const { data: listings, refetch } = useAppwrite(() => getAllListings(user.$id))
-  // IN ACTUAL PRACTICE ALL LISTINGS WOULD BE RETRIEVED BY LOCATION, HIGHLIGHTED LISTINGS WOULD JUST BE FED THE TOP 3
+  const [location, setLocation] = useState(null)
+  const [errorMsg, setErrorMsg] = useState(null)
   // const { data: closestListings } = useAppwrite(() => getClosestListings(user.$id, user.location))
   const [refreshing, setRefreshing] = useState(false)
   const [selectedListing, setSelectedListing] = useState(null)
+
+  useEffect(() => {
+    async function getCurrentLocation() {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Without location permissions enabled, you will not be able to see results close to you.');
+        return
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      // location object structure: "{"coords": {"latitude", "longitude"} }
+      setLocation(location)
+    }
+    getCurrentLocation()
+  }, [])
+
+  let text = 'Waiting...'
+  if (errorMsg) {
+    text = "Location Permission denied"
+  } else if (location) {
+    text = `LAT: ${location.coords.latitude}${typeof location.coords.latitude}, LONG: ${location.coords.longitude}`
+  }
 
   const onRefresh = async () => {
     setRefreshing(true)
@@ -58,6 +81,7 @@ const Home = () => {
         )}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
+      <Text className="text-mint text-xl">{text}</Text>
     </SafeAreaView>
   )
 }
