@@ -1,7 +1,7 @@
 import { RefreshControl, FlatList, Pressable, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import useAppwrite from '../../lib/useAppwrite'
-import { getAllListings } from '../../lib/appwrite'
+import { getAllListings, updateLocation } from '../../lib/appwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import HighlightedListing from '../../components/HighlightedListing'
 import ListingCard from '../../components/ListingCard'
@@ -12,7 +12,7 @@ import * as Location from 'expo-location'
 
 
 const Home = () => {
-  const { user, page } = useGlobalContext()
+  const { user, setUser, page } = useGlobalContext()
   const { data: listings, refetch } = useAppwrite(() => getAllListings(user.$id))
   const [location, setLocation] = useState(null)
   const [errorMsg, setErrorMsg] = useState(null)
@@ -34,12 +34,15 @@ const Home = () => {
     getCurrentLocation()
   }, [])
 
-  let text = 'Waiting...'
-  if (errorMsg) {
-    text = "Location Permission denied"
-  } else if (location) {
-    text = `LAT: ${location.coords.latitude}${typeof location.coords.latitude}, LONG: ${location.coords.longitude}`
-  }
+  useEffect(() => {
+    if (!location || !user || (location.coords.latitude === parseFloat(user.latitude) && location.coords.longitude == parseFloat(user.longitude))) return
+
+    async function updateUserLocation() {
+      const updated = await updateLocation(user.$id, location.coords.longitude, location.coords.latitude)
+      setUser(updated)
+    }
+    updateUserLocation()
+  }, [location])
 
   const onRefresh = async () => {
     setRefreshing(true)
@@ -81,7 +84,6 @@ const Home = () => {
         )}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
-      <Text className="text-mint text-xl">{text}</Text>
     </SafeAreaView>
   )
 }
