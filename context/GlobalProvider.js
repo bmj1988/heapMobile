@@ -18,7 +18,7 @@ export const GlobalProvider = ({ children }) => {
             .then((res) => {
                 console.log("RES GET CURRENT USER", res)
                 if (res) {
-                    setIsLoggedIn(true);
+                    setIsLoggedIn(true)
                     setUser(res)
                 }
                 else {
