@@ -9,6 +9,7 @@ import EmptyState from '../../components/EmptyState'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import * as Location from 'expo-location'
+import CustomButton from '../../components/CustomButton'
 
 
 const Home = () => {
@@ -27,18 +28,19 @@ const Home = () => {
         setErrorMsg('Without location permissions enabled, you will not be able to see results close to you.');
         return
       }
-      let location = await Location.getCurrentPositionAsync({});
+      let loc = await Location.getCurrentPositionAsync({});
       // location object structure: "{"coords": {"latitude", "longitude"} }
-      setLocation(location)
+      setLocation(loc)
     }
     getCurrentLocation()
   }, [])
 
   useEffect(() => {
-    if (!location || !user || (location.coords.latitude === parseFloat(user.latitude) && location.coords.longitude == parseFloat(user.longitude))) return
-
+    console.log("update check ran", location ? location : "no location", user ? user : "no user", user && location ? (location.coords.latitude === parseFloat(user.latitude) && location.coords.longitude === parseFloat(user.longitude)) : "no user and location")
+    if (!location || !user || (location.coords.latitude === parseFloat(user.latitude) && location.coords.longitude === parseFloat(user.longitude))) return
     async function updateUserLocation() {
       const updated = await updateLocation(user.$id, location.coords.longitude, location.coords.latitude)
+      console.log("UPDATED", updated)
       setUser(updated)
     }
     updateUserLocation()
@@ -84,8 +86,14 @@ const Home = () => {
         )}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
+      <CustomButton title={"Test Function"} handlePress={() => fetch(`https://674e6d0d6a579a4b6cf3.appwrite.global/feed?page=${page}`, {
+        method: "GET",
+        headers: {"x-user-id": `${user.$id}`, "x-longitude": `${location.coords ? location.coords.longitude : "-79.001"}`, "x-latitude" : `${location.coords ? location.coords.latitude : user.latitude}`}
+      }).then((results) => results.json()).then((results) => console.log(results))} />
     </SafeAreaView>
   )
 }
 
+
+//`https://674e6d0d6a579a4b6cf3.appwrite.global/current?userId=${user.$id}`
 export default Home
