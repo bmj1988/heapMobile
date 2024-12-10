@@ -17,11 +17,8 @@ const HighlightedListing = ({ listing, onClose }) => {
 
     useEffect(() => {
         if (listing) {
-            console.log("LISTING", listing)
-            console.log("BIDS", listing.bids)
             for (let bid of listing.bids) {
-                console.log("BID")
-                if (bid && bid.buyerId && bid.buyerId.$id === user.$id) {
+                if (bid && bid.buyer && bid.buyer.$id === user.$id) {
                     setSubmitted(bid)
                     return
                 }
@@ -32,8 +29,7 @@ const HighlightedListing = ({ listing, onClose }) => {
 
     const submitBid = async () => {
         setIsLoading(true)
-        const newBid = await postBid({ offer: parseFloat(bid), message: message ? message : null, buyerId: user.$id, listing: listing.$id })
-        console.log(newBid)
+        const newBid = await postBid({ offer: parseFloat(bid), message: message ? message : null, buyer: user.$id, listing: listing.$id })
         setSubmitted(newBid)
         setIsLoading(false)
     }

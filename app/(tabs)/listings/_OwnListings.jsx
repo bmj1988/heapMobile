@@ -11,7 +11,7 @@ const BidDisplay = ({ bid }) => {
             </View>
             <View className="m-2 items-center justify-center">
                 <Text className="color-gray-100 text-rsthin">User</Text>
-                <Text className="text-2xl font-rsbold color-mint">{bid.buyerId.username}</Text>
+                <Text className="text-2xl font-rsbold color-mint">{bid.buyer.username}</Text>
             </View>
             <View className="m-2 items-center justify-center">
                 <CustomButton title={"Accept Bid"} handlePress={() => console.log("Click accept bid")} />

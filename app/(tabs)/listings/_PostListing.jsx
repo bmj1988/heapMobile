@@ -58,7 +58,6 @@ const PostListingHeader = ({ refetch }) => {
 
         if (!newListing.askingPrice) newListing.askingPrice = "0"
         else newListing.askingPrice = newListing.askingPrice.toString()
-        console.log("!!! LISTING BEFORE APPWRITE", newListing)
         const successful = await postListing(newListing)
         await refetch()
         setIsLoading(false)
