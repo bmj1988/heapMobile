@@ -6,7 +6,7 @@ const FontAwesome = icons.FontAwesome
 
 const EmptyState = ({ title, subtitle, buttonText, onPress }) => {
     return (
-        <View className="justify-center items-center px-4">
+        <View className="justify-center items-center mr-8">
             <FontAwesome
                 name="search"
                 size={50}
