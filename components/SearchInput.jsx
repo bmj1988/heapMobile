@@ -6,6 +6,18 @@ import { router, usePathname } from 'expo-router'
 const SearchInput = ({ initialQuery }) => {
     const pathName = usePathname();
     const [query, setQuery] = useState(initialQuery || '')
+
+    const search = () => {
+        if (!query) {
+            Alert.alert('Missing query',
+                "Please input something to search results across database"
+            )
+        }
+        if (pathName.startsWith('/search')) router.setParams({ query })
+
+        else router.push(`/search/${query}`)
+    }
+
     return (
 
         <View className="w-[60%] h-16 px-4 bg-black-100 border-2 border-black-200 rounded-2xl focus:border-mint items-center flex-row space-x-4">
@@ -14,18 +26,10 @@ const SearchInput = ({ initialQuery }) => {
                 value={query}
                 placeholderTextColor={"#CDCDE0"}
                 onChangeText={(e) => setQuery(e)}
+                onEndEditing={() => search()}
             />
 
-            <TouchableOpacity onPress={() => {
-                if (!query) {
-                    Alert.alert('Missing query',
-                        "Please input something to search results across database"
-                    )
-                }
-                if (pathName.startsWith('/search')) router.setParams({ query })
-
-                else router.push(`/search/${query}`)
-            }}>
+            <TouchableOpacity onPress={() => search()}>
                 <Image source={icons.search} className={"w-5 h-5"}
                     resizeMode='contain' />
             </TouchableOpacity>
