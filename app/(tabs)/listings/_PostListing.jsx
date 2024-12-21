@@ -25,7 +25,7 @@ const PostListingHeader = ({ refetch }) => {
         images: [],
         details: '',
         location: { address: "", city: "", state: "", $id: 0 },
-        askingPrice: "0",
+        askingPrice: 0,
         user: user.$id,
         tags: [],
     })
@@ -66,7 +66,7 @@ const PostListingHeader = ({ refetch }) => {
             images: [],
             details: '',
             location: currentLocation.$id,
-            askingPrice: "0",
+            askingPrice: 0,
             user: user.$id,
             tags: [],
         })
