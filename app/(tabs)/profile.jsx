@@ -5,7 +5,7 @@ const Profile = () => {
   const { user, page } = useGlobalContext()
 
   return (
-    <ProfileComponent user={user} />
+    <ProfileComponent user={user} own={true} />
   )
 }
 

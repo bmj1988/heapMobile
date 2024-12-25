@@ -3,7 +3,9 @@ import React from 'react'
 import ListingTag from '../ListingTag'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
-const TagSelectionModal = ({ visible, closeModal, form, setForm, tagList }) => {
+const TagSelectionModal = ({ visible, closeModal, form, setForm, tagList, card }) => {
+    // Maybe this could be handled more elegantly with more dev time, but so could everything else
+    const limit = card ? 1 : 3
 
     return (
         <Modal
@@ -20,12 +22,13 @@ const TagSelectionModal = ({ visible, closeModal, form, setForm, tagList }) => {
                                 const selected = form.tags.includes(tag.$id)
                                 return (
                                     <Pressable key={tag.$id} onPress={() => {
-                                        console.log("click")
-                                        console.log(form.tags)
+                                        if (card) {
+                                            setForm({ ...form, tags: tag.$id, material: tag.name })
+                                        }
                                         if (selected) {
                                             setForm({ ...form, tags: form.tags.filter((currentTag) => currentTag !== tag.$id) })
                                         }
-                                        else if (form.tags.length < 3) {
+                                        else if (form.tags.length < limit) {
 
                                             setForm({ ...form, tags: [...form.tags, tag.$id] })
                                         }
@@ -39,7 +42,7 @@ const TagSelectionModal = ({ visible, closeModal, form, setForm, tagList }) => {
                             })
                         }
                     </View>
-                    <Text className="text-sm font-rsthin color-mint mb-2">Select up to 3 tags</Text>
+                    <Text className="text-sm font-rsthin color-mint mb-2">{card ? "Select a material" : "Select up to 3 tags"}</Text>
                     <Pressable onPress={() => closeModal()}>
                         <MaterialCommunityIcons name={"close"} color={"#50bf88"} size={50} />
                     </Pressable>

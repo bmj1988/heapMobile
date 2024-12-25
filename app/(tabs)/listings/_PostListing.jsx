@@ -58,6 +58,7 @@ const PostListingHeader = ({ refetch }) => {
 
         if (!newListing.askingPrice) newListing.askingPrice = "0"
         else newListing.askingPrice = newListing.askingPrice.toString()
+        // #update this "successful" return will eventually be able to check for returned errors but will eventually be regated to a redux file
         const successful = await postListing(newListing)
         await refetch()
         setIsLoading(false)

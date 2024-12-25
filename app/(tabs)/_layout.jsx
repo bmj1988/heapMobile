@@ -1,7 +1,6 @@
 import { View, Text } from 'react-native'
 import { Tabs } from 'expo-router'
 import { FontAwesome } from '@expo/vector-icons'
-// import { cubes, envelope, user, home } from "@expo/vector-icons/FontAwesome"
 import TabsHeader from '../../components/TabsHeader'
 
 const TabIcon = ({ icon, color, name, focused }) => {
