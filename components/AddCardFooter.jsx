@@ -2,11 +2,12 @@ import { View, Text, TextInput, Pressable, Modal, FlatList } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import TagSelectionModal from './Modals/TagSelectionModal'
 import { useGlobalContext } from '@/context/GlobalProvider'
-import { getAllTags } from '../lib/appwrite'
+import { createNewCard, getAllTags } from '../lib/appwrite'
 import useAppwrite from '../lib/useAppwrite'
 import { FontAwesome } from '@expo/vector-icons'
+import CustomButton from './CustomButton'
 
-const AddCardFooter = () => {
+const AddCardFooter = ({ setPrices, prices }) => {
     const { user } = useGlobalContext()
     const materialRef = useRef(null);
     /// load into redis soon
@@ -14,6 +15,7 @@ const AddCardFooter = () => {
     const [tagModalVisible, setTagModalVisible] = useState(false)
     const [dropdownVisible, setDropdownVisible] = useState(false)
     const [formDisplay, setFormDisplay] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const [form, setForm] = useState({
         user: user.$id,
         material: "Material",
@@ -29,12 +31,23 @@ const AddCardFooter = () => {
             materialRef.current.value = form.material;
         }
     }, [form.material])
-    const submit = () => {
-        // databases.upsertDocument(form)
-        // setLoading true
-        // clear state
-        // refresh cards
-        // setLoading false
+
+    const submit = async () => {
+        setIsLoading(true)
+        try {
+            let { data: newCard, refetch } = useAppwrite(() => createNewCard())
+            if (data) newCard = data
+            else throw new Error("Could not create new card")
+            setPrices(...prices, newCard)
+            setFormDisplay(false)
+        }
+        catch (e) {
+            console.error(e)
+            throw new Error(e)
+        }
+        finally {
+            setIsLoading(false)
+        }
     }
     return (
         <View>
@@ -55,7 +68,7 @@ const AddCardFooter = () => {
                 <FontAwesome name={"plus"} color={"#50bf88"} size={22} />
             </Pressable>
             {formDisplay &&
-                <View className={`h-fit w-[full] bg-black-200 p-1 flex-row items-center justify-between`}>
+                <View className={`h-fit w-[full] bg-black-200 p-1 flex-row items-center justify-between pr-3 pl-3`}>
                     <View className={`items-center justify-start w-[35%]`}>
                         <Text className="color-gray-100 text-rsthin">{"Material"}</Text>
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
@@ -101,7 +114,7 @@ const AddCardFooter = () => {
                             </Modal>
                         )}
                     </View>
-                    <View className="items-center justify-center w-[25%]">
+                    {/* <View className="items-center justify-center w-[25%]">
                         <Text className="color-gray-100 text-rsthin">{"Minimum\n(optional)"}</Text>
                         <TextInput
                             inputMode='numeric'
@@ -109,7 +122,8 @@ const AddCardFooter = () => {
                                 let min = parseInt(text)
                                 if (min > 0) setForm({ ...form, minimum: min })
                             }} />
-                    </View>
+                    </View> */}
+                    <CustomButton title={"ADD"} handlePress={() => submit()} isLoading={isLoading} containerStyles={'p-2 h-[fit-content]'}/>
                     <TagSelectionModal visible={tagModalVisible} closeModal={() => setTagModalVisible(false)} form={form} setForm={setForm} tagList={tags} currentTags={form.tags} card={true} />
 
                 </View>

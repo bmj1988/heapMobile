@@ -4,20 +4,22 @@ import useAppwrite from '../lib/useAppwrite'
 import EmptyState from './EmptyState'
 import PriceCard from './PriceCard'
 import AddCardFooter from './AddCardFooter'
+import { useState } from 'react'
 
 const ProfileComponent = ({ user, own }) => {
     // THIS WILL RUN A SINGLE CALL IN THE FUTURE
     const result = useAppwrite(() => getReviews(user.$id))
     const cards = useAppwrite(() => getCards(user.$id))
     const [totalReviews, averageRating] = result.data
+    const [prices, setPrices] = useState(cards)
 
 
     const ListEmptyComponent = () => {
         if (own) {
 
             return (
-                <View>
-                    <Text className="color-mint font-rsregular">
+                <View style={{ alignItems: 'center', marginBottom: 20 }}>
+                    <Text style={{ textAlign: 'center', width: "90%" }} className="color-mint font-rsregular">
                         {"You currently have no prices listed on your profile. This is how buyers advertise their prices to sellers viewing their profile. If you are here to sell, don't worry -- we won't show this section on your profile. If you are here to buy and want to post a price, click the Add button below to get started."}
                     </Text>
                 </View>
@@ -37,7 +39,7 @@ const ProfileComponent = ({ user, own }) => {
     const ProfileFooter = () => {
         if (own) {
             return (
-                <AddCardFooter />
+                <AddCardFooter setPrices={setPrices} prices={prices} />
             )
         }
         else {
@@ -63,8 +65,8 @@ const ProfileComponent = ({ user, own }) => {
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", margin: 20 }}>
                     <View>
-                        <Text className="color-mint font-rsregular">{`${user.listings.length} Sales`}</Text>
-                        <Text className="color-mint font-rsregular">Location: </Text>
+                        <Text className="color-mint font-rsregular text-lg">{`${user.listings.length} Sales`}</Text>
+                        <Text className="color-mint font-rsregular text-lg">Location: </Text>
                     </View>
                     <View>
                         <Text className="color-mint font-rsregular">{`Joined ${new Date(user.$createdAt).toLocaleDateString()}`}</Text>
@@ -88,7 +90,8 @@ const ProfileComponent = ({ user, own }) => {
             <FlatList
                 className={"m-5"}
                 contentContainerStyle={{ justifyContent: 'center' }}
-                data={cards}
+                data={prices}
+                style={{ marginBottom: 0 }}
                 keyExtractor={(item) => item.$id}
                 renderItem={({ item }) => (
                     <Pressable onPress={() => console.log("draft sale proposal")} onLongPress={() => {

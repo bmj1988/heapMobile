@@ -22,8 +22,6 @@ const Home = () => {
   const [refreshing, setRefreshing] = useState(false)
   const [selectedListing, setSelectedListing] = useState(null)
 
-  console.log("LISTINGS", listings)
-
   const onRefresh = async () => {
     setRefreshing(true)
     await refetch();
