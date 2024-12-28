@@ -16,30 +16,27 @@ const AddCardFooter = ({ setPrices, prices }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false)
     const [formDisplay, setFormDisplay] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const [form, setForm] = useState({
+    const defaultFormState = {
         user: user.$id,
         material: "Material",
         price: 0.00,
         tags: null,
         type: "lb",
         minimum: null
-    })
-    const units = ['lbs', 'kg', 'piece']
+    }
+    const [form, setForm] = useState(defaultFormState)
+    const units = ['lb', 'kg', 'piece']
 
-    useEffect(() => {
-        if (materialRef.current) {
-            materialRef.current.value = form.material;
-        }
-    }, [form.material])
+    console.log('PRICES', prices)
 
     const submit = async () => {
         setIsLoading(true)
         try {
-            let { data: newCard, refetch } = useAppwrite(() => createNewCard())
-            if (data) newCard = data
-            else throw new Error("Could not create new card")
-            setPrices(...prices, newCard)
+            let newCard = await createNewCard(form)
+            if (!newCard) throw new Error("Could not create new card")
+            setPrices([...prices, newCard])
             setFormDisplay(false)
+            setForm(defaultFormState)
         }
         catch (e) {
             console.error(e)
@@ -49,6 +46,7 @@ const AddCardFooter = ({ setPrices, prices }) => {
             setIsLoading(false)
         }
     }
+
     return (
         <View>
             <Pressable
@@ -79,10 +77,10 @@ const AddCardFooter = ({ setPrices, prices }) => {
                                 <Text className="color-gray-100 text-rsthin">Add a tag</Text>
                             </Pressable>
                             <TextInput
-                                className="bg-black color-mint text-rsregular w-[80px] h-[33px]"
+                                className="bg-black color-mint text-rsregular w-[80px] h-[33px] p-1 rounded-md m-1"
                                 onChangeText={(text) => setForm({ ...form, material: text })}
-                                ref={materialRef}
-                                autoFocus={true}
+                                value={form.material}
+                            // autoFocus={true}
                             />
                         </View>
                     </View>
@@ -90,29 +88,31 @@ const AddCardFooter = ({ setPrices, prices }) => {
                         <Text className="color-gray-100 text-rsthin">{"Price"}</Text>
                         <TextInput
                             value={form.price}
-                            className="bg-black color-mint text-rsregular w-[50px] h-[33px]"
+                            className="bg-black color-mint text-rsregular w-[50px] h-[33px] p-1 rounded-md m-1"
                             inputMode='decimal'
-                            onChangeText={(text) => setForm({ ...form, type: parseFloat(text) })} />
+                            onChangeText={(text) => setForm({ ...form, price: parseFloat(text) })} />
                     </View>
-                    <View className="items-center justify-center w-[10%]">
-                        <Pressable onPress={() => setDropdownVisible(true)}>
-                            <Text className={`font-rsbold color-mint text-xl bg-black p-1`}>{form.type}</Text>
+                    <View className="items-center justify-center w-[20%]">
+                        <Text className="color-gray-100 text-rsthin">{"per"}</Text>
+                        <Pressable onPress={() => {
+                            console.log('click')
+                            setDropdownVisible(true)
+                        }
+                        }>
+                            <Text className={`font-rsbold color-mint text-xl bg-black p-1 rounded-md m-1`}>{form.type}</Text>
                         </Pressable>
-                        {dropdownVisible && (
-                            <Modal transparent animationType='fade'>
-                                <Pressable onPress={setDropdownVisible} />
-                                <View>
-                                    <FlatList
-                                        data={units}
-                                        keyExtractor={(item) => item}
-                                        renderItem={({ item }) => {
-                                            <Pressable onPress={() => setForm({ ...form, type: item })}>
-                                                <Text>{`per ${item}`}</Text>
-                                            </Pressable>
-                                        }} />
-                                </View>
-                            </Modal>
-                        )}
+                        {dropdownVisible &&
+                            <View style={{ position: 'absolute', bottom: 1 }} className="p-1 rounded-md m-1 bg-black">
+                                {units.map((unit) => (
+                                    <Pressable key={unit} onPress={() => {
+                                        setForm({ ...form, type: unit })
+                                        setDropdownVisible(false)
+                                    }}>
+                                        <Text className={`font-rsbold color-mint text-xl bg-black p-1`}>{unit}</Text>
+                                    </Pressable>
+                                ))}
+                            </View>
+                        }
                     </View>
                     {/* <View className="items-center justify-center w-[25%]">
                         <Text className="color-gray-100 text-rsthin">{"Minimum\n(optional)"}</Text>
@@ -123,7 +123,7 @@ const AddCardFooter = ({ setPrices, prices }) => {
                                 if (min > 0) setForm({ ...form, minimum: min })
                             }} />
                     </View> */}
-                    <CustomButton title={"ADD"} handlePress={() => submit()} isLoading={isLoading} containerStyles={'p-2 h-[fit-content]'}/>
+                    <CustomButton title={"ADD"} handlePress={() => submit()} isLoading={isLoading} containerStyles={'p-2 h-[fit-content]'} />
                     <TagSelectionModal visible={tagModalVisible} closeModal={() => setTagModalVisible(false)} form={form} setForm={setForm} tagList={tags} currentTags={form.tags} card={true} />
 
                 </View>

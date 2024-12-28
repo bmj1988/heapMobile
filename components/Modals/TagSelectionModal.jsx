@@ -29,7 +29,9 @@ const TagSelectionModal = ({ visible, closeModal, form, setForm, tagList, card }
                                         setForm({ ...form, tags: null })
                                     }
                                     else if (card) {
+                                        console.log(form.material, tag.name)
                                         setForm({ ...form, tags: tag.$id, material: tag.name })
+                                        closeModal()
                                     }
                                     else if (selected) {
                                         setForm({ ...form, tags: form.tags.filter((currentTag) => currentTag !== tag.$id) })

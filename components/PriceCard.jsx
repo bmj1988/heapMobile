@@ -9,7 +9,7 @@ const PriceCard = ({ card }) => {
             </View>
             <View className="items-center justify-center w-[25%]">
                 <Text className="color-gray-100 text-rsthin">{"Price"}</Text>
-                <Text className={`font-rsbold color-mint text-xl`}>{card.price}</Text>
+                <Text className={`font-rsbold color-mint text-xl`}>{card.price.toFixed(2)}</Text>
             </View>
             <View className="items-center justify-center w-[10%]">
                 <Text className="color-gray-100 text-rsthin">{"Unit type"}</Text>

@@ -4,15 +4,18 @@ import useAppwrite from '../lib/useAppwrite'
 import EmptyState from './EmptyState'
 import PriceCard from './PriceCard'
 import AddCardFooter from './AddCardFooter'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const ProfileComponent = ({ user, own }) => {
     // THIS WILL RUN A SINGLE CALL IN THE FUTURE
     const result = useAppwrite(() => getReviews(user.$id))
-    const cards = useAppwrite(() => getCards(user.$id))
+    const { data: cards, refetch } = useAppwrite(() => getCards(user.$id))
     const [totalReviews, averageRating] = result.data
     const [prices, setPrices] = useState(cards)
 
+    useEffect(() => {
+        setPrices(cards)
+    }, [cards])
 
     const ListEmptyComponent = () => {
         if (own) {
@@ -109,12 +112,9 @@ const ProfileComponent = ({ user, own }) => {
                 ListEmptyComponent={() => (
                     <ListEmptyComponent />
                 )}
-                ListFooterComponent={() => (
-                    <ProfileFooter />
-                )}
-            >
+            />
 
-            </FlatList>
+            <AddCardFooter prices={prices} setPrices={setPrices} />
         </SafeAreaView>
     )
 }
