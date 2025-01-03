@@ -2,19 +2,18 @@ import { View, Text, TextInput, Pressable, Modal, FlatList } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import TagSelectionModal from './Modals/TagSelectionModal'
 import { useGlobalContext } from '@/context/GlobalProvider'
-import { createNewCard, getAllTags } from '../lib/appwrite'
+import { createNewCard, getAllTags, updateCard } from '../lib/appwrite'
 import useAppwrite from '../lib/useAppwrite'
 import { FontAwesome } from '@expo/vector-icons'
 import CustomButton from './CustomButton'
 
-const AddCardFooter = ({ setPrices, prices, edit = false, formOpen = false }) => {
+const AddCardFooter = ({ setPrices, prices, edit = null, formOpen = false, setCard = null, setFormOpen = null }) => {
     const { user } = useGlobalContext()
-    const materialRef = useRef(null);
     /// load into redis soon
     const { data: tags } = useAppwrite(() => getAllTags())
     const [tagModalVisible, setTagModalVisible] = useState(false)
     const [dropdownVisible, setDropdownVisible] = useState(false)
-    const [formDisplay, setFormDisplay] = useState(formOpen)
+    const [formDisplay, setFormDisplay] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const defaultFormState = {
         user: user.$id,
@@ -24,15 +23,38 @@ const AddCardFooter = ({ setPrices, prices, edit = false, formOpen = false }) =>
         type: "lb",
         minimum: null
     }
-    const [form, setForm] = useState(edit ? edit : defaultFormState)
+    const [form, setForm] = useState(defaultFormState)
     const units = ['lb', 'kg', 'piece']
 
-    console.log('PRICES', prices)
+    useEffect(() => {
+        if (formOpen) {
+            console.log('EDIT OBJ', edit)
+            setForm({
+                $id: edit.$id,
+                user: edit.user.$id,
+                material: edit.material,
+                price: edit.price,
+                type: edit.type,
+                minimum: edit.minimum
+            })
+            setFormDisplay(true)
+            console.log(form)
+        }
+    }, [formOpen, edit])
+
+    console.log('FORM', form)
 
     const submit = async () => {
         setIsLoading(true)
         try {
             if (edit) {
+                let update = await updateCard(form)
+                let otherPrices = prices.filter((card) => card.$id !== form.$id)
+                setPrices([...otherPrices, update])
+                setFormDisplay(false)
+                setCard(null)
+                setForm(defaultFormState)
+                console.log("Success")
                 // going to change from this appwrite logic to a function
                 // that UPSERTS so this should not be an issue
                 // let update = await updateCard(form)
@@ -77,37 +99,46 @@ const AddCardFooter = ({ setPrices, prices, edit = false, formOpen = false }) =>
                     alignItems: 'center',
                     borderBottomWidth: 0
                 }}
-                onPress={() => setFormDisplay(!formDisplay)}>
-                <Text className={`font-rsbold color-mint text-xl mr-5`}>Add Price Card</Text>
+                onPress={() => {
+                    if (edit) {
+                        setCard(null)
+                    }
+                    setForm(defaultFormState)
+                    setFormOpen(false)
+                    setFormDisplay(!formDisplay)
+                }}>
+                <Text className={`font-rsbold color-mint text-xl mr-5`}>{`${edit ? "Edit" : "Add"} Price Card`}</Text>
                 <FontAwesome name={"plus"} color={"#50bf88"} size={22} />
             </Pressable>
             {formDisplay &&
                 <View className={`h-fit w-[full] bg-primary p-1 flex-row items-center justify-between pr-3 pl-3`}>
                     <View className={`items-center justify-start w-[35%]`}>
                         <Text className="color-gray-100 text-rsthin">{"Material"}</Text>
-                        <View style={{ display: 'flex', flexDirection: 'row' }}>
-                            <Pressable
-                                onPress={() => edit ? null : setTagModalVisible(true)}
-                                className="justify-start items-center">
-                                <FontAwesome name={"tag"} color={"#50bf88"} size={25} />
-                                <Text className="color-gray-100 text-rsthin">Add a tag</Text>
-                            </Pressable>
-                            {edit &&
-                                <Text>
-                                    {edit.material}
-                                </Text>}
-                            {!edit && <TextInput
-                                className="bg-black-200 color-mint text-rsregular w-[80px] h-[33px] p-1 rounded-md m-1"
-                                onChangeText={(text) => setForm({ ...form, material: text })}
-                                value={form.material}
-                            // autoFocus={true}
-                            />}
-                        </View>
+                        {edit &&
+                            <Text className="text-xl color-mint font-rsbold">
+                                {edit.material}
+                            </Text>}
+                        {!edit &&
+                            <View style={{ display: 'flex', flexDirection: 'row' }}>
+                                <Pressable
+                                    onPress={() => edit ? null : setTagModalVisible(true)}
+                                    className="justify-start items-center">
+                                    <FontAwesome name={"tag"} color={"#50bf88"} size={25} />
+                                    <Text className="color-gray-100 text-rsthin">Add a tag</Text>
+                                </Pressable>
+                                <TextInput
+                                    className="bg-black-200 color-mint text-rsregular w-[80px] h-[33px] p-1 rounded-md m-1"
+                                    onChangeText={(text) => setForm({ ...form, material: text })}
+                                    value={form.material}
+                                // autoFocus={true}
+                                />
+                            </View>}
+
                     </View>
                     <View className="h-full items-center justify-start w-[10%]">
                         <Text className="color-gray-100 text-rsthin">{"Price"}</Text>
                         <TextInput
-                            value={form.price}
+                            value={parseFloat(form.price).toFixed(2)}
                             className="bg-black-200 color-mint text-rsregular w-[50px] h-[33px] p-1 rounded-md m-1"
                             inputMode='decimal'
                             onChangeText={(text) => setForm({ ...form, price: parseFloat(text) })} />
@@ -128,7 +159,7 @@ const AddCardFooter = ({ setPrices, prices, edit = false, formOpen = false }) =>
                                         setForm({ ...form, type: unit })
                                         setDropdownVisible(false)
                                     }}>
-                                        <Text className={`font-rsbold color-mint text-xl bg-black-200 p-1`}>{unit}</Text>
+                                        <Text className={`font-rsbold color-mint text-xl bg-black-200 p-1`}>{form.type}</Text>
                                     </Pressable>
                                 ))}
                             </View>

@@ -14,10 +14,17 @@ const ProfileComponent = ({ user, own }) => {
     const [prices, setPrices] = useState(cards)
     const [selected, setSelected] = useState(null)
     const [formOpen, setFormOpen] = useState(false)
+    const [cardToEdit, setEdited] = useState(null)
 
     useEffect(() => {
         setPrices(cards)
     }, [cards])
+
+    useEffect(() => {
+        if (!cardToEdit && selected) {
+            setSelected(null)
+        }
+    }, [cardToEdit])
 
     const ListEmptyComponent = () => {
         if (own) {
@@ -99,13 +106,17 @@ const ProfileComponent = ({ user, own }) => {
                 style={{ marginBottom: 0 }}
                 keyExtractor={(item) => item.$id}
                 renderItem={({ item }) => (
-                    <Pressable className={"mb-2"} onPress={() => console.log("draft sale proposal")} onLongPress={() => {
+                    <Pressable className={"mb-2"} onPress={() => {
+                        setSelected(item.$id)
+                        setEdited(item)
+                        setFormOpen(true)
+                    }} onLongPress={() => {
                         if (own) {
                             console.log("Edit card")
                         }
                         else return
                     }}>
-                        <PriceCard card={item} />
+                        <PriceCard card={item} selected={selected === item.$id} />
                     </Pressable>
                 )}
                 ListHeaderComponent={() => (
@@ -116,7 +127,7 @@ const ProfileComponent = ({ user, own }) => {
                 )}
             />
 
-            <AddCardFooter prices={prices} setPrices={setPrices} formOpen={formOpen} />
+            <AddCardFooter prices={prices} setPrices={setPrices} formOpen={formOpen} setFormOpen={setFormOpen} edit={cardToEdit} setCard={setEdited} />
         </SafeAreaView>
     )
 }

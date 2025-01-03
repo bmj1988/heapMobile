@@ -1,8 +1,8 @@
 import { View, Text } from 'react-native'
 
-const PriceCard = ({ card }) => {
+const PriceCard = ({ card, selected }) => {
     return (
-        <View className={`h-fit w-[full] bg-black-200 rounded-2xl p-2 flex-row items-center justify-between`}>
+        <View className={`${selected ? "border-[1px] border-mint border-solid" : ""} h-fit w-[full] bg-black-200 rounded-2xl p-1 flex-row items-center justify-between`}>
             <View className={`items-center justify-center ${card.minimum ? "w-[25%]" : "w-[40%]"}`}>
                 <Text className="color-gray-100 text-rsthin">{"Material"}</Text>
                 <Text className={`font-rsbold color-mint text-xl`}>{card.material}</Text>
