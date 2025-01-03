@@ -17,7 +17,7 @@ const TagSelectionModal = ({ visible, closeModal, form, setForm, tagList, card }
             </View>
 
             <View className="bg-black p-2 border-solid border-gray-100 border-[1px] rounded-sm justify-center items-center" style={{ minWidth: '25%', marginBottom: '50%' }}>
-                <Text className="color-mint text-2xl font-rsbold underline">{"Add tags to your listing"}</Text>
+                <Text className="color-mint text-2xl font-rsbold underline">{ card ? "Select a material" :"Add tags to your listing"}</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', maxWidth: 350, marginBottom: 10 }}>
                     {
                         tagList.map((tag) => {
@@ -50,7 +50,7 @@ const TagSelectionModal = ({ visible, closeModal, form, setForm, tagList, card }
                         })
                     }
                 </View>
-                <Text className="text-sm font-rsthin color-mint mb-2">{card ? "Select a material" : "Select up to 3 tags"}</Text>
+                <Text className="text-sm font-rsthin color-mint mb-2">{card ? "Users will be able to price search using tags" : "Select up to 3 tags"}</Text>
                 <Pressable onPress={() => closeModal()}>
                     <MaterialCommunityIcons name={"close"} color={"#50bf88"} size={50} />
                 </Pressable>

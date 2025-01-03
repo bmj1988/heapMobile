@@ -12,6 +12,8 @@ const ProfileComponent = ({ user, own }) => {
     const { data: cards, refetch } = useAppwrite(() => getCards(user.$id))
     const [totalReviews, averageRating] = result.data
     const [prices, setPrices] = useState(cards)
+    const [selected, setSelected] = useState(null)
+    const [formOpen, setFormOpen] = useState(false)
 
     useEffect(() => {
         setPrices(cards)
@@ -97,7 +99,7 @@ const ProfileComponent = ({ user, own }) => {
                 style={{ marginBottom: 0 }}
                 keyExtractor={(item) => item.$id}
                 renderItem={({ item }) => (
-                    <Pressable onPress={() => console.log("draft sale proposal")} onLongPress={() => {
+                    <Pressable className={"mb-2"} onPress={() => console.log("draft sale proposal")} onLongPress={() => {
                         if (own) {
                             console.log("Edit card")
                         }
@@ -114,7 +116,7 @@ const ProfileComponent = ({ user, own }) => {
                 )}
             />
 
-            <AddCardFooter prices={prices} setPrices={setPrices} />
+            <AddCardFooter prices={prices} setPrices={setPrices} formOpen={formOpen} />
         </SafeAreaView>
     )
 }
