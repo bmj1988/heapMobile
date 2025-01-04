@@ -42,19 +42,20 @@ const AddCardFooter = ({ setPrices, prices, edit = null, formOpen = false, setCa
         }
     }, [formOpen, edit])
 
-    console.log('FORM', form)
 
     const wipeForm = (newPrices) => {
-        setPrices(newPrices)
+        setFormOpen(false)
         setFormDisplay(false)
         setForm(defaultFormState)
         setCard(null)
+        setPrices(newPrices)
         return
     }
 
     const submitEdit = async () => {
         setIsLoading(true)
         try {
+            console.log('FORM', form)
             let update = await updateCard(form)
             let otherPrices = prices.filter((card) => card.$id !== form.$id)
             wipeForm([...otherPrices, update])
