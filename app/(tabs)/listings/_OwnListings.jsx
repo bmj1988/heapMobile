@@ -1,26 +1,7 @@
-import { FlatList, Pressable, Text, View } from "react-native"
-import ListingCard from "@/components/ListingCard"
-import CustomButton from '@/components/CustomButton'
+import { FlatList } from "react-native"
 import EmptyState from '@/components/EmptyState'
-import DeleteListingButton from "../../../components/listingComponents/DeleteListingButton"
+import OwnListingCard from "../../../components/listingComponents/OwnListingCard"
 
-const BidDisplay = ({ bid }) => {
-    return (
-        <View className="h-[40px] w-[50%] bg-black-200 rounded-2xl p-2 flex-row items-center justify-around">
-            <View className="m-2 items-center justify-center">
-                <Text className="color-gray-100 text-rsthin">Offer</Text>
-                <Text className="text-2xl font-rsbold color-mint">{bid.offer}</Text>
-            </View>
-            <View className="m-2 items-center justify-center">
-                <Text className="color-gray-100 text-rsthin">User</Text>
-                <Text className="text-2xl font-rsbold color-mint">{bid.buyer.username}</Text>
-            </View>
-            <View className="m-2 items-center justify-center">
-                <CustomButton title={"Accept Bid"} handlePress={() => console.log("Click accept bid")} />
-            </View>
-        </View>
-    )
-}
 // will have to build validator for closing listings before confirmed bids are expired
 
 const OwnListings = ({ userListings, selectedListing, setSelectedListing, refetchUserListings }) => {
@@ -32,24 +13,8 @@ const OwnListings = ({ userListings, selectedListing, setSelectedListing, refetc
             data={userListings}
             keyExtractor={(item) => item.$id}
             renderItem={({ item }) => (
-                <Pressable onPress={() => setSelectedListing(item.$id)} className="m-1">
-                    <View style={{ display: 'flex', flexDirection: 'row' }}>
-                        <ListingCard listing={item} selected={selectedListing && selectedListing === item.$id} ownListing={true} />
-                        {
-                            selectedListing === item.$id &&
-                            <DeleteListingButton listing={item.$id} refetch={refetchUserListings} valid={true} deselectListing={() => setSelectedListing(null)} />
-                        }
-                    </View>
-                    {selectedListing === item.$id &&
-
-                        item.bids.map((bid) => <BidDisplay bid={bid} />)
-
-                    }
-                </Pressable>
+                <OwnListingCard listing={item} refetch={refetchUserListings} setSelectedListing={setSelectedListing} selectedListing={selectedListing} />
             )}
-            // ListHeaderComponent={() => (
-            //   <PostListingHeader />
-            // )}
             ListEmptyComponent={() => (
                 <EmptyState
                     title={"No listings found."}
