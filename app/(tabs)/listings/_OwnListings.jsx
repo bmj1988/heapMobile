@@ -2,6 +2,8 @@ import { FlatList, Pressable, Text, View } from "react-native"
 import ListingCard from "@/components/ListingCard"
 import CustomButton from '@/components/CustomButton'
 import EmptyState from '@/components/EmptyState'
+import DeleteListingButton from "../../../components/listingComponents/DeleteListingButton"
+
 const BidDisplay = ({ bid }) => {
     return (
         <View className="h-[40px] w-[50%] bg-black-200 rounded-2xl p-2 flex-row items-center justify-around">
@@ -19,20 +21,29 @@ const BidDisplay = ({ bid }) => {
         </View>
     )
 }
+// will have to build validator for closing listings before confirmed bids are expired
 
-const OwnListings = ({ userListings, selectedListing, setSelectedListing }) => {
+const OwnListings = ({ userListings, selectedListing, setSelectedListing, refetchUserListings }) => {
 
     return (
         <FlatList
-            style={{marginLeft: 20, marginTop: 10, maxHeight: (userListings.length*90), width: "90%"}}
+            style={{ marginLeft: 15, marginTop: 10, maxHeight: (userListings.length * 90), width: "90%" }}
             contentContainerStyle={{ justifyContent: 'center' }}
             data={userListings}
             keyExtractor={(item) => item.$id}
             renderItem={({ item }) => (
-                <Pressable onPress={() => setSelectedListing(item.$id)}>
-                    <ListingCard listing={item} selected={selectedListing && selectedListing === item.$id} ownListing={true} />
+                <Pressable onPress={() => setSelectedListing(item.$id)} className="m-1">
+                    <View style={{ display: 'flex', flexDirection: 'row' }}>
+                        <ListingCard listing={item} selected={selectedListing && selectedListing === item.$id} ownListing={true} />
+                        {
+                            selectedListing === item.$id &&
+                            <DeleteListingButton listing={item.$id} refetch={refetchUserListings} valid={true} deselectListing={() => setSelectedListing(null)} />
+                        }
+                    </View>
                     {selectedListing === item.$id &&
+
                         item.bids.map((bid) => <BidDisplay bid={bid} />)
+
                     }
                 </Pressable>
             )}

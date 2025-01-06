@@ -18,13 +18,13 @@ const PostListingHeader = ({ refetch }) => {
     const [modalVisible, setModalVisible] = useState(false)
     const [tagModalVisible, setTagModalVisible] = useState(false)
     const { data: tags } = useAppwrite(() => getAllTags())
-    const locations = [...user.locations, { address: "New Location", city: "", state: "", $id: 0 }]
+    const [locations, setLocations] = useState([...user.locations, { address: "New Location", city: "", state: "", $id: 0 }])
     const [currentLocation, setCurrentLocation] = useState(locations[0])
     const isKeyboardOpen = keyboardOpen();
     const [form, setForm] = useState({
         images: [],
         details: '',
-        location: { address: "", city: "", state: "", $id: 0 },
+        location: { address: currentLocation.address, city: currentLocation.city, state: currentLocation.state, $id: currentLocation.$id },
         askingPrice: 0,
         user: user.$id,
         tags: [],
@@ -51,8 +51,9 @@ const PostListingHeader = ({ refetch }) => {
         let newListing = { ...form }
 
         if (!currentLocation.$id) {
-            let newLocation = await createLocation({ ...form.location })
-            newListing.location = newLocation
+            let newLocation = await createLocation({ ...form.location, user: user.$id })
+            newListing.location = newLocation.$id
+            setLocations([...locations, newLocation])
         }
         else newListing.location = currentLocation.$id
 
@@ -60,9 +61,8 @@ const PostListingHeader = ({ refetch }) => {
         else newListing.askingPrice = newListing.askingPrice.toString()
         // #update this "successful" return will eventually be able to check for returned errors but will eventually be regated to a redux file
         const successful = await postListing(newListing)
+        // refetch OWN listings
         await refetch()
-        setIsLoading(false)
-
         setForm({
             images: [],
             details: '',
@@ -72,6 +72,7 @@ const PostListingHeader = ({ refetch }) => {
             tags: [],
         })
         setFormOpen(false)
+        setIsLoading(false)
     }
 
     return (

@@ -22,7 +22,7 @@ const LocationPicker = ({ setLocation, currentLocation, locationsList, closeModa
                             }}
                                 className="flex-row items-center justify-between m-1 p-1">
                                 <FontAwesome name={location.$id === currentLocation.$id ? "circle" : "circle-thin"} color={location.$id === currentLocation.$id ? "#50bf88" : "#CDCDE0"} size={18} />
-                                <Text className={`font-rsregular text-lg ${location.$id === currentLocation.$id ? "color-mint" : "color-gray-100"}`}>{location.address}</Text>
+                                <Text numberOfLines={1} ellipsizeMode='clip' className={`ml-1 font-rsregular text-lg ${location.$id === currentLocation.$id ? "color-mint" : "color-gray-100"}`}>{location.address}</Text>
                             </Pressable>
                         ))
                     }
