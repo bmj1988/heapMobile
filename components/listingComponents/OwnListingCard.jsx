@@ -1,6 +1,5 @@
 import { View, Pressable } from 'react-native'
 import ListingCard from "@/components/ListingCard"
-import BidDisplay from './BidDisplay'
 import DeleteListingButton from "./DeleteListingButton"
 import EditListingDetailsModal from '../Modals/EditListingDetailsModal'
 import { useCallback, useState } from 'react'

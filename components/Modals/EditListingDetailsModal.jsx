@@ -88,7 +88,7 @@ const EditListingDetailsModal = ({ listing, isVisible, setVisible, cycleListings
                         <View className="m-2">
                             <Text className="relative font-rssemibold text-white text-lg">{`Listing #${listing.$id}`}</Text>
                         </View>
-                        {(listing.images.length || images.length) &&
+                        {(listing.images.length > 0 || images.length > 0) &&
                             <View className={"align-start m-2"}>
                                 <TextPressable
                                     onPress={() => openPicker()}
