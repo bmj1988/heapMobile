@@ -6,26 +6,47 @@ import { useEffect, useState } from 'react'
 import { getUserLocations, updateListing } from '../../lib/appwrite'
 import useAppwrite from '@/lib/useAppwrite'
 import { getAllTags } from '../../lib/appwrite'
+import * as ImagePicker from 'expo-image-picker'
+import TextPressable from '../TextPressable'
+
 
 const EditListingDetailsModal = ({ listing, isVisible, setVisible, cycleListings }) => {
 
     const defaultFormValues = {
-        images: [...listing.images],
         details: listing.details,
         location: listing.location,
         askingPrice: listing.askingPrice,
         tags: listing.tags
     }
+    const defaultImageValue = [...listing.images]
     const { data: tags } = useAppwrite(() => getAllTags())
     const { data: userLocations } = useAppwrite(() => getUserLocations(listing.user.$id))
     const [showAllTags, setShowAllTags] = useState(false)
     const [form, setForm] = useState(defaultFormValues)
+    const [images, setImages] = useState(defaultImageValue)
+    const [deletedImages, setDeletedImages] = useState([])
     const [dropdownVisible, setDropdownVisible] = useState(false)
     const [locations, setLocations] = useState([{ address: "New Location", $id: 0 }])
 
     useEffect(() => {
         setLocations([...userLocations, { address: "New Location", $id: 0 }])
     }, [userLocations])
+
+    const openPicker = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync(
+            {
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: false,
+                allowsMultipleSelection: true,
+                selectionLimit: 3,
+                aspect: [4, 3],
+                quality: 1
+            }
+        )
+        if (!result.canceled) {
+            setImages(result.assets)
+        }
+    }
 
     const selectTag = (tag) => {
         if (form.tags.includes(tag)) {
@@ -46,10 +67,10 @@ const EditListingDetailsModal = ({ listing, isVisible, setVisible, cycleListings
     }
     const submitEdit = async () => {
         // in future need isLoading, setIsLoading
-        let updated = await updateListing(listing.$id, { ...form })
+        let updated = await updateListing(listing.$id, { ...form }, images, deletedImages)
         console.log(`ADDRESS`, updated.location.address)
         if (updated) {
-            cycleListings({...form, $id: listing.$id, bids: listing.bids})
+            cycleListings({ ...form, $id: listing.$id, bids: listing.bids, images })
             setVisible(false)
             setShowAllTags(false)
         }
@@ -67,10 +88,18 @@ const EditListingDetailsModal = ({ listing, isVisible, setVisible, cycleListings
                         <View className="m-2">
                             <Text className="relative font-rssemibold text-white text-lg">{`Listing #${listing.$id}`}</Text>
                         </View>
-
+                        {(listing.images.length || images.length) &&
+                            <View className={"align-start m-2"}>
+                                <TextPressable
+                                    onPress={() => openPicker()}
+                                    textStyle={"text-sm font-rsthin color-white underline"}
+                                    text={"Change images"} />
+                            </View>}
                         <View className="justify-center items-center">
-                            <ListingImagesCarousel images={listing.images} />
+                            <ListingImagesCarousel images={images} setImages={setImages} own={true} imagePicker={openPicker} deletedImages={deletedImages} setDeletedImages={setDeletedImages} />
                         </View>
+
+
 
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }} className="m-2">
                             <Text className="text-white font-rssemibold">{"Asking Price"}</Text>
@@ -139,36 +168,36 @@ const EditListingDetailsModal = ({ listing, isVisible, setVisible, cycleListings
                             </View>
 
                             {!showAllTags ? (
-                                form.tags.map((tag) => (
-                                    <Pressable key={tag.$id}>
-                                        <ListingTag tag={tag} textStyles={"color-black-100"} viewStyles={"bg-mint"} />
-                                    </Pressable>
-                                ))
+                                <View style={{ display: 'flex', flexDirection: 'row' }}>
+                                    {form.tags.map((tag) => (
+                                        <Pressable key={tag.$id}>
+                                            <ListingTag tag={tag} textStyles={"color-black-100"} viewStyles={"bg-mint"} />
+                                        </Pressable>))}
+                                </View>
+                            )
+                                : (
+                                    <FlatList
+                                        contentConstainerStyle={{ justifyContent: 'center', alignItems: 'center' }}
+                                        data={tags}
+                                        numColumns={3}
+                                        renderItem={({ item }) => (
+                                            <Pressable onPress={() => selectTag(item)} key={item.$id}>
+                                                {
+                                                    form.tags.map((tag) => tag.$id).includes(item.$id) ? (
+                                                        <ListingTag tag={item} viewStyles={"bg-mint"} textStyles={"color-black-100"} />
+                                                    ) : (
+                                                        <ListingTag tag={item} />
+                                                    )
+                                                }
 
-
-                            ) : (
-                                <FlatList
-                                    contentConstainerStyle={{ justifyContent: 'center', alignItems: 'center' }}
-                                    data={tags}
-                                    numColumns={3}
-                                    renderItem={({ item }) => (
-                                        <Pressable onPress={() => selectTag(item)} key={item.$id}>
-                                            {
-                                                form.tags.map((tag) => tag.$id).includes(item.$id) ? (
-                                                    <ListingTag tag={item} viewStyles={"bg-mint"} textStyles={"color-black-100"} />
-                                                ) : (
-                                                    <ListingTag tag={item} />
-                                                )
-                                            }
-
-                                        </Pressable>)}
-                                />
-                            )}
+                                            </Pressable>)}
+                                    />
+                                )}
 
 
                         </View>
 
-                        <View style={{ display: 'flex', flexDirection: 'row' }} className="justify-around items-center">
+                        <View style={{ display: 'flex', flexDirection: 'row', marginTop: 10 }} className="justify-around items-center">
                             <View>
                                 <Pressable onPress={() => onModalClose()}>
                                     <AntDesign name="back" color="#DC143C" size={40} />

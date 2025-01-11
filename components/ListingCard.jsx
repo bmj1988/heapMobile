@@ -18,7 +18,7 @@ const ListingCard = ({ listing, selected, ownListing, bid }) => {
             <View className="w-[25%] h-[90%]">
                 {listing.images.map((image) => {
                     const i = listing.images.indexOf(image)
-                    return <Image source={{ uri: image.url }} style={{ width: 60, height: 60, elevation: 5 - i, right: i * 10, position: 'absolute', borderColor: "#232533", borderRadius: 8, borderWidth: 1 }} className="rounded-md" key={image.$id} />
+                    return <Image source={image.url ? { uri: image.url } : {uri: image.uri}} style={{ width: 60, height: 60, elevation: 5 - i, right: i * 10, position: 'absolute', borderColor: "#232533", borderRadius: 8, borderWidth: 1 }} className="rounded-md" key={image.$id ? image.$id : image.uri} />
                 })}
                 {/* <Image source={{uri: 'https://reactjs.org/logo-og.png'}}
                 style={{width: 40, height: 40}} /> */}
