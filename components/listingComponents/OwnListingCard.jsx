@@ -15,7 +15,6 @@ const OwnListingCard = ({ listing, ownListings, setSelectedListing, selectedList
         setListings(ownListings.filter((listing) => listing.$id !== listing.$id))
     }
 
-
     const editListing = useCallback(
         (editedListing) => {
             setSelectedListing(null)
@@ -33,12 +32,8 @@ const OwnListingCard = ({ listing, ownListings, setSelectedListing, selectedList
                         <DeleteListingButton listing={listing.$id} valid={true} deleteListing={confirmDeleteListing} />
                     }
                 </View>
-                {selectedListing === listing.$id &&
-
-                    listing.bids.map((bid) => <BidDisplay bid={bid} />)
-
-                }
             </Pressable>
+
             <EditListingDetailsModal listing={listing} setVisible={setModalVisible} isVisible={modalVisible} cycleListings={editListing} />
         </>
     )

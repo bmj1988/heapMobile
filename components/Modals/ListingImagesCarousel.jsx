@@ -37,8 +37,6 @@ const ListingImagesCarousel = ({ images, own, setImages, imagePicker, setDeleted
     //     }
     // }
 
-    console.log(">>>> ListingImagesCarousel >>>", images)
-
     return (
         <FlatList
             data={images}

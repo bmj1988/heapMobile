@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Pressable, Text } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { getUserListings } from '@/lib/appwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
@@ -10,6 +10,7 @@ import UserBids from './_UserBids'
 import CaretCollapsible from '../../../components/CaretCollapsible'
 import CustomModal from '../../../components/Modals/TestingDetailsModal'
 import PostListingHeader from './_PostListing'
+import BidsFooter from '../../../components/listingComponents/BidsFooter'
 
 
 const Listings = () => {
@@ -21,13 +22,16 @@ const Listings = () => {
     const { data: userBids } = useAppwrite(() => getUserBids(user.$id))
 
     return (
-        <SafeAreaView className="bg-primary h-full">
-            <PostListingHeader refetch={() => refetch()} />
-            {/* Your posted listings */}
-            <CaretCollapsible text={"Your listings"} DropdownComponent={<OwnListings userListings={userListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} refetchUserListings={refetch} />} />
-            {/* Listings you've bid on */}
-            <CaretCollapsible text={"Your bids"} DropdownComponent={<UserBids bids={userBids} setSelected={setDetailsModal} selected={detailsModal} />} />
-            {/* <UserBids bids={userBids} /> */}
+        <SafeAreaView className="bg-primary h-full justify-between">
+            <View>
+                <PostListingHeader refetch={() => refetch()} />
+                {/* Your posted listings */}
+                <CaretCollapsible text={"Your listings"} DropdownComponent={<OwnListings userListings={userListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} refetchUserListings={refetch} />} />
+                {/* Listings you've bid on */}
+                <CaretCollapsible text={"Your bids"} DropdownComponent={<UserBids bids={userBids} setSelected={setDetailsModal} selected={detailsModal} />} />
+                {/* <UserBids bids={userBids} /> */}
+            </View>
+            {selectedListing && <BidsFooter listing={userListings.find((listing) => listing.$id === selectedListing)} />}
             {Object.keys(detailsModal).length > 0 && <CustomModal visible={Object.keys(detailsModal).length > 0} onClose={() => setDetailsModal({})} listing={detailsModal} />}
         </SafeAreaView>
     )

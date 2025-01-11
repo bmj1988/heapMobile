@@ -1,4 +1,4 @@
-import { View, Text, Modal, Pressable, TextInput, ScrollView, FlatList, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { View, Text, Modal, Pressable, TextInput, FlatList, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import ListingTag from '../ListingTag'
 import ListingImagesCarousel from './ListingImagesCarousel'
 import { FontAwesome, AntDesign } from '@expo/vector-icons'
