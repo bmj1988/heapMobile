@@ -7,11 +7,15 @@ import { useState } from 'react'
 const BidDisplay = ({ bid }) => {
 
     const [isLoading, setIsLoading] = useState(false)
+    const [isAccepted, setIsAccepted] = useState(bid.accepted)
+
     const handleAcceptBid = async () => {
         setIsLoading(true)
         await acceptBid(bid.$id)
+        setIsAccepted(true)
         setIsLoading(false)
     }
+
 
 
     return (
@@ -25,8 +29,20 @@ const BidDisplay = ({ bid }) => {
                 <Text className="color-gray-100 text-rsthin">User</Text>
                 <Text className="text-xl font-rsthin color-mint">{bid.buyer.username}</Text>
             </View>
-            <CustomButton title="Accept" handlePress={handleAcceptBid} containerStyles="min-h-[40px] p-2" isLoading={isLoading} />
+            {
+                !isAccepted && (
+                    <CustomButton title="Accept" handlePress={handleAcceptBid} containerStyles="min-h-[40px] p-2" isLoading={isLoading} />
+                )
+            }
+            {
+                isAccepted && (
+                    <Text className="font-rssemibold color-mint text-lg">Accepted</Text>
+                )
+            }
         </View>
+
+
+
     )
 }
 

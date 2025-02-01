@@ -26,6 +26,7 @@ const EditListingDetailsModal = ({ listing, isVisible, setVisible, cycleListings
     const [images, setImages] = useState(defaultImageValue)
     const [deletedImages, setDeletedImages] = useState([])
     const [dropdownVisible, setDropdownVisible] = useState(false)
+    const [disabled, setDisabled] = useState(!listing.isOpen)
     const [locations, setLocations] = useState([{ address: "New Location", $id: 0 }])
 
     useEffect(() => {
@@ -40,7 +41,8 @@ const EditListingDetailsModal = ({ listing, isVisible, setVisible, cycleListings
                 allowsMultipleSelection: true,
                 selectionLimit: 3,
                 aspect: [4, 3],
-                quality: 1
+                quality: 1,
+                disabled: disabled
             }
         )
         if (!result.canceled) {
@@ -49,6 +51,7 @@ const EditListingDetailsModal = ({ listing, isVisible, setVisible, cycleListings
     }
 
     const selectTag = (tag) => {
+        if (disabled) return
         if (form.tags.includes(tag)) {
             let otherTags = form.tags.filter((filteredTag) => tag.$id !== filteredTag.$id)
             setForm({ ...form, tags: otherTags })
@@ -140,20 +143,25 @@ const EditListingDetailsModal = ({ listing, isVisible, setVisible, cycleListings
                         {form.location.address === "New Location" && <View style={{ color: "#50bf88", flexDirection: 'row', justifyContent: 'flexStart', gap: 10, alignItems: 'center', marginBottom: 10, marginLeft: 10 }}>
                             <TextInput className="bg-gray-100 rounded-sm color-black p-1 w-[40%]"
                                 placeholder='Street Address'
+                                editable={!disabled}
                                 onChangeText={(e) => setForm({ ...form, location: { ...form.location, address: e } })} />
                             <TextInput className="bg-gray-100 rounded-sm color-black p-1 w-[35%]"
                                 placeholder='City'
+                                editable={!disabled}
                                 onChangeText={(e) => setForm({ ...form, location: { ...form.location, city: e } })} />
                             <TextInput className="bg-gray-100 rounded-sm color-black p-1 w-[12%]"
                                 placeholder='State'
+                                editable={!disabled}
                                 maxLength={2}
                                 onChangeText={(e) => setForm({ ...form, location: { ...form.location, state: e } })} />
+
                         </View>}
                         {/* DESCRIPTION */}
                         <View className="m-2">
                             <Text className="text-white font-rssemibold mb-1">{"Description"}</Text>
                             <TextInput
                                 value={form.details}
+                                editable={!disabled}
                                 onChangeText={(details) => setForm({ ...form, details })}
                                 numberOfLines={2}
                                 className="text-white font-rsregular bg-black-200" />
