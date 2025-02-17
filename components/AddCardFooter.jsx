@@ -28,7 +28,6 @@ const AddCardFooter = ({ setPrices, prices, edit = null, formOpen = false, setCa
 
     useEffect(() => {
         if (formOpen) {
-            console.log('EDIT OBJ', edit)
             setForm({
                 $id: edit.$id,
                 user: edit.user.$id,
@@ -38,7 +37,6 @@ const AddCardFooter = ({ setPrices, prices, edit = null, formOpen = false, setCa
                 minimum: edit.minimum
             })
             setFormDisplay(true)
-            console.log(form)
         }
     }, [formOpen, edit])
 
@@ -55,11 +53,9 @@ const AddCardFooter = ({ setPrices, prices, edit = null, formOpen = false, setCa
     const submitEdit = async () => {
         setIsLoading(true)
         try {
-            console.log('FORM', form)
             let update = await updateCard(form)
             let otherPrices = prices.filter((card) => card.$id !== form.$id)
             wipeForm([...otherPrices, update])
-            console.log("Submit Edit - Success")
         }
         catch (e) {
             console.error(e)

@@ -1,17 +1,14 @@
 import { RefreshControl, FlatList, Pressable, Text } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import useAppwrite from '../../lib/useAppwrite'
-import { getAllListings, updateLocation } from '../../lib/appwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import HighlightedListing from '../../components/HighlightedListing'
 import ListingCard from '../../components/ListingCard'
 import EmptyState from '../../components/EmptyState'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
-import CustomButton from '../../components/CustomButton'
 import { useLocationContext } from '../../context/LocationProvider'
 import { fetchFeed } from '../../lib/appwriteFunctions'
-
 
 const Home = () => {
   const { user } = useGlobalContext()
@@ -56,13 +53,6 @@ const Home = () => {
         )}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
-
-      {/* CUSTOM BUTTON TO TRY OUT FUNCTION ENDPOINTS
-      <CustomButton title={"Test Function"} handlePress={() => fetch(`https://674e6d0d6a579a4b6cf3.appwrite.global/feed?page=${page}`, {
-        method: "GET",
-        headers: { "x-user-id": `${user.$id}`, "x-longitude": `${user.longitude}`, "x-latitude": `${user.latitude}` }
-      }).then((results) => results.json()).then((results) => console.log(results))} /> */}
-
     </SafeAreaView>
   )
 }

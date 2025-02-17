@@ -19,7 +19,6 @@ const SignIn = () => {
     try {
       await signIn(form.email, form.password)
       const result = await getCurrentUser()
-      console.log("RESUTL OF GET CURRENT USER", result)
       setUser(result)
       setIsLoggedIn(true)
       router.replace('/home')
