@@ -4,9 +4,11 @@ import { FontAwesome } from '@expo/vector-icons'
 import ListingTag from '../ListingTag'
 import ListingImagesCarousel from './ListingImagesCarousel'
 import BidDisplay from '../listingComponents/BidDisplay'
+import RevokeBidModal from './RevokeBidModal'
 
 const OwnListingDetailsModal = ({ listing, isVisible, setVisible }) => {
     const [currentPage, setCurrentPage] = useState(0);
+    const [revokeModalVisible, setRevokeModalVisible] = useState(false);
     const BIDS_PER_PAGE = 5;
 
     const paginatedBids = useCallback(() => {
@@ -16,6 +18,12 @@ const OwnListingDetailsModal = ({ listing, isVisible, setVisible }) => {
 
     const hasMoreBids = (currentPage + 1) * BIDS_PER_PAGE < listing.bids.length;
     const hasPreviousBids = currentPage > 0;
+
+    const handleRevoke = async () => {
+        // TODO: Implement revoke API call here
+        console.log('Revoking bid...');
+        setRevokeModalVisible(false)
+    };
 
     return (
         <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={() => setVisible(false)}>
@@ -46,32 +54,47 @@ const OwnListingDetailsModal = ({ listing, isVisible, setVisible }) => {
 
                     {/* Bids Section */}
                     <View className="flex-1 mt-2">
-                        <Text className="text-white font-rssemibold text-lg mb-2">Bids</Text>
-                        <FlatList
-                            className="flex-1"
-                            data={paginatedBids()}
-                            keyExtractor={(item) => item.$id}
-                            renderItem={({ item }) => (
-                                <BidDisplay bid={item} />
-                            )}
-                            ListEmptyComponent={() => (
-                                <View className="items-center py-4">
-                                    <Text className="text-white font-rsregular">No bids yet</Text>
+                        <Text className="text-white font-rssemibold text-lg mb-2">
+                            {listing.open ? "Bids" : "Awaiting Pickup"}
+                        </Text>
+                        {listing.open ? (
+                            <>
+                                <FlatList
+                                    className="flex-1"
+                                    data={paginatedBids()}
+                                    keyExtractor={(item) => item.$id}
+                                    renderItem={({ item }) => (
+                                        <BidDisplay bid={item} />
+                                    )}
+                                    ListEmptyComponent={() => (
+                                        <View className="items-center py-4">
+                                            <Text className="text-white font-rsregular">No bids yet</Text>
+                                        </View>
+                                    )}
+                                />
+                                <View className="flex-row justify-center space-x-4 mt-2">
+                                    {hasPreviousBids && (
+                                        <Pressable onPress={() => setCurrentPage(prev => prev - 1)}>
+                                            <FontAwesome name="caret-up" color="#fff" size={24} />
+                                        </Pressable>
+                                    )}
+                                    {hasMoreBids && (
+                                        <Pressable onPress={() => setCurrentPage(prev => prev + 1)}>
+                                            <FontAwesome name="caret-down" color="#fff" size={24} />
+                                        </Pressable>
+                                    )}
                                 </View>
-                            )}
-                        />
-                        <View className="flex-row justify-center space-x-4 mt-2">
-                            {hasPreviousBids && (
-                                <Pressable onPress={() => setCurrentPage(prev => prev - 1)}>
-                                    <FontAwesome name="caret-up" color="#fff" size={24} />
+                            </>
+                        ) : (
+                            <View>
+                                <BidDisplay bid={listing.bids.find(bid => bid.accepted)} />
+                                <Pressable onPress={() => setRevokeModalVisible(true)}>
+                                    <Text className="text-red-500 text-center underline mt-2 font-rsregular">
+                                        Revoke this bid
+                                    </Text>
                                 </Pressable>
-                            )}
-                            {hasMoreBids && (
-                                <Pressable onPress={() => setCurrentPage(prev => prev + 1)}>
-                                    <FontAwesome name="caret-down" color="#fff" size={24} />
-                                </Pressable>
-                            )}
-                        </View>
+                            </View>
+                        )}
                     </View>
 
                     {/* Close Button */}
@@ -82,6 +105,11 @@ const OwnListingDetailsModal = ({ listing, isVisible, setVisible }) => {
                     </View>
                 </View>
             </View>
+            <RevokeBidModal
+                isVisible={revokeModalVisible}
+                setVisible={setRevokeModalVisible}
+                onRevoke={handleRevoke}
+            />
         </Modal>
     )
 }
