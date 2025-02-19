@@ -25,9 +25,11 @@ const BidDisplay = ({ bid }) => {
 
                 <Text className="text-2xl font-rssemibold color-mint">{`$${bid.offer}`}</Text>
             </View>
-            <View className="m-1 items-center justify-center">
+            <View className="m-1 items-center justify-center max-w-[120px]">
                 <Text className="color-gray-100 text-rsthin">User</Text>
-                <Text className="text-xl font-rsthin color-mint">{bid.buyer.username}</Text>
+                <Text className="text-xl font-rsthin color-mint" numberOfLines={1} ellipsizeMode="tail">
+                    {bid.buyer.username}
+                </Text>
             </View>
             {
                 !isAccepted && (
