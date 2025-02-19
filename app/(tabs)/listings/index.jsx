@@ -10,14 +10,13 @@ import UserBids from './_UserBids'
 import CaretCollapsible from '../../../components/CaretCollapsible'
 import CustomModal from '../../../components/Modals/TestingDetailsModal'
 import PostListingHeader from './_PostListing'
-import BidsFooter from '../../../components/listingComponents/BidsFooter'
-
+import OwnListingDetailsModal from '../../../components/Modals/OwnListingDetailsModal'
 
 const Listings = () => {
     const { user, page } = useGlobalContext()
     const [selectedListing, setSelectedListing] = useState(null)
     const [detailsModal, setDetailsModal] = useState({})
-    const [viewOwnPosts, setViewOwnListings] = useState(true)
+    const [bidsModalVisible, setBidsModalVisible] = useState(false)
     const { data: userListings, refetch } = useAppwrite(() => getUserListings(user.$id))
     const { data: userBids } = useAppwrite(() => getUserBids(user.$id))
 
@@ -31,7 +30,6 @@ const Listings = () => {
                 <CaretCollapsible text={"Your bids"} DropdownComponent={<UserBids bids={userBids} setSelected={setDetailsModal} selected={detailsModal} />} />
                 {/* <UserBids bids={userBids} /> */}
             </View>
-            {selectedListing && <BidsFooter listing={userListings.find((listing) => listing.$id === selectedListing)} />}
             {Object.keys(detailsModal).length > 0 && <CustomModal visible={Object.keys(detailsModal).length > 0} onClose={() => setDetailsModal({})} listing={detailsModal} />}
         </SafeAreaView>
     )

@@ -1,6 +1,8 @@
 import { SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
+import { Provider } from 'react-redux';
+import store from '../store';
 import { GlobalProvider } from '../context/GlobalProvider'
 import { LocationProvider } from '../context/LocationProvider'
 
@@ -30,16 +32,18 @@ export default function RootLayout() {
   if (!fontsLoaded && !error) return null
 
   return (
-    <GlobalProvider>
-      <LocationProvider>
-        <Stack screenOptions={{
-          headerShown: false
-        }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-      </LocationProvider>
-    </GlobalProvider>
+    <Provider store={store}>
+      <GlobalProvider>
+        <LocationProvider>
+          <Stack screenOptions={{
+            headerShown: false
+          }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+        </LocationProvider>
+      </GlobalProvider>
+    </Provider>
   );
 }
