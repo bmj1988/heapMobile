@@ -18,7 +18,7 @@ const UserBids = ({ bids, setSelected, selected }) => {
             )}
             ListEmptyComponent={() => (
                 <EmptyState
-                    title={"No listings found."}
+                    title={"No bids found."}
                     subtitle={"Bid on a listing now!"}
                     buttonText={"Go to feed"}
                     onPress={() => router.replace('/home')} />
