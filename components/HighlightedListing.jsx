@@ -4,6 +4,7 @@ import CustomButton from './CustomButton'
 import CustomModal from './Modals/TestingDetailsModal'
 import { postBid } from '../lib/appwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
+import { placeBid } from '../lib/appwriteFunctions'
 
 
 
@@ -29,7 +30,7 @@ const HighlightedListing = ({ listing, onClose }) => {
 
     const submitBid = async () => {
         setIsLoading(true)
-        const newBid = await postBid({ offer: parseFloat(bid), message: message ? message : null, buyer: user.$id, listing: listing.$id })
+        const newBid = await placeBid({ offer: parseFloat(bid), message: message ? message : null, buyer: user.$id, listing: listing.$id })
         setSubmitted(newBid)
         setIsLoading(false)
     }
