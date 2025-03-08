@@ -45,10 +45,10 @@ const Home = () => {
 
         ListEmptyComponent={() => (
           <EmptyState
-            title={"No listings found."}
-            subtitle={"Be the first to post a listing today!"}
-            buttonText={"Post a listing"}
-            onPress={() => router.push('/listings')}
+            title={!location ? "Waiting for location..." : "No listings found."}
+            subtitle={!location ? "Please enable location services to see nearby listings." : "Be the first to post a listing today!"}
+            buttonText={!location ? "Refresh" : "Post a listing"}
+            onPress={() => !location ? onRefresh() : router.push('/listings')}
           />
         )}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
