@@ -78,6 +78,7 @@ const ClosedListingCard = ({ listing, ownListings, setSelectedListing, selectedL
             </Pressable>
             <ClosedListingModal
                 listing={listing}
+                acceptedBid={acceptedBid}
                 isVisible={modalVisible}
                 setVisible={setModalVisible}
             />

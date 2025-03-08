@@ -1,11 +1,12 @@
 import { View, Modal, Text, Pressable } from 'react-native'
 import { useRouter } from 'expo-router'
-
-const ClosedListingModal = ({ listing, isVisible, setVisible }) => {
+import { revokeBid } from '../../lib/lambdas/bids'
+const ClosedListingModal = ({ listing, acceptedBid, isVisible, setVisible }) => {
     const router = useRouter()
 
-    const handleRevokeBid = () => {
+    const handleRevokeBid = async () => {
         // Add logic to revoke the bid
+        await revokeBid(acceptedBid.$id)
         setVisible(false)
     }
 
