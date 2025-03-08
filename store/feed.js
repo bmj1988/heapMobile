@@ -1,17 +1,16 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
+import { fetchFeed } from '../lib/appwriteFunctions';
 
 const initialState = {
-    feedListings: {},
+    listings: {},
     status: 'idle',
     error: null,
 };
 
 export const fetchFeedListings = createAsyncThunk(
     'feed/fetchFeedListings',
-    async () => {
-        const response = await fetch('your-api-endpoint/feed');
-        const data = await response.json();
-        return data;
+    async ({ long, lat, userId, radius = 10, page = 1 }) => {
+        return await fetchFeed(long, lat, userId, radius, page);
     }
 );
 
@@ -19,8 +18,8 @@ const feedSlice = createSlice({
     name: 'feed',
     initialState,
     reducers: {
-        setFeedListings: (state, action) => {
-            state.feedListings = action.payload;
+        setListings: (state, action) => {
+            state.listings = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -30,7 +29,7 @@ const feedSlice = createSlice({
             })
             .addCase(fetchFeedListings.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.feedListings = action.payload.reduce((acc, listing) => {
+                state.listings = action.payload.reduce((acc, listing) => {
                     acc[listing.$id] = listing;
                     return acc;
                 }, {});
@@ -44,7 +43,12 @@ const feedSlice = createSlice({
 
 export const { setFeedListings } = feedSlice.actions;
 
-export default feedSlice.reducer;
+// FEED LISTINGS ARRAY SELECTOR
+const selectFeed = state => state.feed;
 
-export const selectAllFeedListings = (state) =>
-    Object.values(state.feed.feedListings);
+export const feedListingsArray = createSelector(
+    [selectFeed],
+    (feed) => Object.values(feed?.listings || {})
+);
+
+export default feedSlice.reducer;

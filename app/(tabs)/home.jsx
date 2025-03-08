@@ -1,5 +1,5 @@
 import { RefreshControl, FlatList, Pressable, Text } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useAppwrite from '../../lib/useAppwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import HighlightedListing from '../../components/HighlightedListing'
@@ -9,21 +9,39 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { useLocationContext } from '../../context/LocationProvider'
 import { fetchFeed } from '../../lib/appwriteFunctions'
+import { fetchFeedListings, feedListingsArray } from '../../store/feed'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Home = () => {
+  const dispatch = useDispatch()
   const { user } = useGlobalContext()
   const { location } = useLocationContext()
   const [page, setPage] = useState(1)
   const [radius, setRadius] = useState(10)
-  const { data: listings, refetch } = useAppwrite(() => fetchFeed(location.longitude, location.latitude, user.$id, radius, page))
+  const listings = useSelector(feedListingsArray)
+  const status = useSelector(state => state.feed.status)
   const [refreshing, setRefreshing] = useState(false)
   const [selectedListing, setSelectedListing] = useState(null)
 
   const onRefresh = async () => {
     setRefreshing(true)
-    await refetch();
+    await dispatch(fetchFeedListings({
+      long: location.longitude,
+      lat: location.latitude,
+      userId: user.$id,
+      radius,
+      page
+    }));
     setRefreshing(false)
   }
+
+  useEffect(() => {
+    dispatch(fetchFeedListings({
+      long: location.longitude,
+      lat: location.latitude,
+      userId: user.$id, radius, page
+    }))
+  }, [])
   /// IDEA: List of listings, fetches next page when scrolled to the end of paginated results
   /// Header component: more info, bigger bidding interface on highlighted result
   return (
