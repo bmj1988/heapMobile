@@ -9,6 +9,7 @@ import { router } from 'expo-router'
 import { useLocationContext } from '../../context/LocationProvider'
 import { fetchFeedListings, feedListingsArray } from '../../store/feed'
 import { useDispatch, useSelector } from 'react-redux'
+import FeedListEmptyComponent from '../../components/ListEmptyComponents/FeedListEmpty'
 
 const Home = () => {
   const dispatch = useDispatch()
@@ -54,8 +55,10 @@ const Home = () => {
         data={listings}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <Pressable onPress={() => setSelectedListing(item)}>
-            <ListingCard listing={item} selected={selectedListing && selectedListing.id === item.id ? true : false} />
+          <Pressable onPress={() => {
+            setSelectedListing(item)
+          }} className="m-1">
+            <ListingCard listing={item} selected={selectedListing && selectedListing.$id === item.$id ? true : false} />
           </Pressable>
         )}
         ListHeaderComponent={() => (
@@ -64,12 +67,7 @@ const Home = () => {
 
 
         ListEmptyComponent={() => (
-          <EmptyState
-            title={!location ? "Waiting for location..." : "No listings found."}
-            subtitle={!location ? "Please enable location services to see nearby listings." : "Be the first to post a listing today!"}
-            buttonText={!location ? "Refresh" : "Post a listing"}
-            onPress={() => !location ? onRefresh() : router.push('/listings')}
-          />
+          <FeedListEmptyComponent status={status} onRefresh={onRefresh} />
         )}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />

@@ -4,13 +4,13 @@ import icons from '../constants/icons'
 import CustomButton from './CustomButton'
 const FontAwesome = icons.FontAwesome
 
-const EmptyState = ({ title, iconSize = 50, subtitle, buttonText, onPress, icon = "search", button = true, viewStyling }) => {
+const EmptyState = ({ title, iconSize = 50, subtitle, buttonText, onPress, icon = "search", button = true, viewStyling, iconColor="mint" }) => {
     return (
         <View className={`justify-center items-center mr-8 ${viewStyling}`}>
             <FontAwesome
                 name={icon}
                 size={iconSize}
-                className="color-mint" />
+                className={`color-${iconColor}`} />
 
             <Text className="font-rsmedium text-sm text-gray-100 mb-5">
                 {title}
