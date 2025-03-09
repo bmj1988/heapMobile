@@ -11,7 +11,7 @@ import keyboardOpen from '../../../hooks/keyboardOpen'
 import TagSelectionModal from '../../../components/Modals/TagSelectionModal'
 
 
-const PostListingHeader = ({ refetch }) => {
+const PostListingHeader = () => {
     const { user } = useGlobalContext()
     const [formOpen, setFormOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -61,8 +61,7 @@ const PostListingHeader = ({ refetch }) => {
         else newListing.askingPrice = newListing.askingPrice.toString()
         // #update this "successful" return will eventually be able to check for returned errors but will eventually be regated to a redux file
         const successful = await postListing(newListing)
-        // refetch OWN listings
-        await refetch()
+
         setForm({
             images: [],
             details: '',

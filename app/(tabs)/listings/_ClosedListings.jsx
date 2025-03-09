@@ -5,7 +5,7 @@ import ClosedListingCard from "../../../components/listingComponents/ClosedListi
 
 // will have to build validator for closing listings before confirmed bids are expired
 
-const ClosedListings = ({ closedListings, selectedListing, setSelectedListing, refetchUserListings }) => {
+const ClosedListings = ({ closedListings, selectedListing, setSelectedListing }) => {
 
     const [listings, setListings] = useState([...closedListings])
 

@@ -1,6 +1,5 @@
 import { RefreshControl, FlatList, Pressable, Text } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import useAppwrite from '../../lib/useAppwrite'
+import { useEffect, useState } from 'react'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import HighlightedListing from '../../components/HighlightedListing'
 import ListingCard from '../../components/ListingCard'
@@ -8,7 +7,6 @@ import EmptyState from '../../components/EmptyState'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { useLocationContext } from '../../context/LocationProvider'
-import { fetchFeed } from '../../lib/appwriteFunctions'
 import { fetchFeedListings, feedListingsArray } from '../../store/feed'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -36,12 +34,16 @@ const Home = () => {
   }
 
   useEffect(() => {
-    dispatch(fetchFeedListings({
-      long: location.longitude,
-      lat: location.latitude,
-      userId: user.$id, radius, page
-    }))
-  }, [])
+    if (location) {
+      dispatch(fetchFeedListings({
+        long: location.longitude,
+        lat: location.latitude,
+        userId: user.$id,
+        radius,
+        page
+      }))
+    }
+  }, [location])
   /// IDEA: List of listings, fetches next page when scrolled to the end of paginated results
   /// Header component: more info, bigger bidding interface on highlighted result
   return (

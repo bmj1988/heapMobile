@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 
 // will have to build validator for closing listings before confirmed bids are expired
 
-const OwnListings = ({ userListings, selectedListing, setSelectedListing, refetchUserListings }) => {
+const OwnListings = ({ userListings, selectedListing, setSelectedListing }) => {
 
     const [listings, setListings] = useState([...userListings])
 

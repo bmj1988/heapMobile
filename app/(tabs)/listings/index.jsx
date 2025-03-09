@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { getUserListings } from '@/lib/appwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import useAppwrite from '@/lib/useAppwrite'
 import OwnListings from './_OwnListings'
@@ -12,32 +11,39 @@ import CustomModal from '../../../components/Modals/TestingDetailsModal'
 import PostListingHeader from './_PostListing'
 import ClosedListings from './_ClosedListings'
 import AcceptedBids from './_AcceptedBids'
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchOwnListings, openListingsArray, closedListingsArray } from '@/store/listings'
 
 const Listings = () => {
-    const { user, page } = useGlobalContext()
+    const { user } = useGlobalContext()
     const [selectedListing, setSelectedListing] = useState(null)
     const [detailsModal, setDetailsModal] = useState({})
-    const [bidsModalVisible, setBidsModalVisible] = useState(false)
-    const { data: userListings, refetch } = useAppwrite(() => getUserListings(user.$id))
+    const dispatch = useDispatch()
     const { data: userBids } = useAppwrite(() => getUserBids(user.$id))
     // Split user's listings by status
-    const openListings = userListings.filter(listing => listing.isOpen === true)
-    const closedListings = userListings.filter(listing => listing.isOpen === false)
+    const openListings = useSelector(openListingsArray)
+    const closedListings = useSelector(closedListingsArray)
+    // status for listing state
+    const status = useSelector(state => state.listings.status)
     // Split user's bids by acceptance status
     const acceptedBids = userBids.filter(bid => bid.accepted === true)
     const pendingBids = userBids.filter(bid => bid.accepted === false)
 
+    useEffect(() => {
+        dispatch(fetchOwnListings(user.$id))
+    }, [])
+
     return (
         <SafeAreaView className="bg-primary h-full justify-between">
             <View>
-                <PostListingHeader refetch={() => refetch()} />
+                <PostListingHeader />
                 {/* Your posted listings */}
-                <CaretCollapsible text={"Your open listings"} DropdownComponent={<OwnListings userListings={openListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} refetchUserListings={refetch} />} />
+                <CaretCollapsible text={"Your open listings"} DropdownComponent={<OwnListings userListings={openListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} />} />
                 {/* Listings you've bid on */}
                 <CaretCollapsible text={"Your pending bids"} DropdownComponent={<UserBids bids={pendingBids} setSelected={setDetailsModal} selected={detailsModal} />} />
                 {/* <UserBids bids={userBids} /> */}
                 <CaretCollapsible text={"Bids ready for pickup"} DropdownComponent={<AcceptedBids bids={acceptedBids} setSelected={setDetailsModal} selected={detailsModal} />} />
-                <CaretCollapsible text={"Listings waiting for pickup"} DropdownComponent={<ClosedListings closedListings={closedListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} refetchUserListings={refetch} />} />
+                <CaretCollapsible text={"Listings waiting for pickup"} DropdownComponent={<ClosedListings closedListings={closedListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} />} />
 
 
             </View>

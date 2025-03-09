@@ -1,18 +1,29 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
+import { fetchUserListings } from '../lib/lambdas/listings';
 const initialState = {
-    listings: {},
+    openListings: {},
+    closedListings: {},
+    newBids: false,
     status: 'idle',
     error: null,
 };
 
 // Create async thunk for fetching listings
-export const fetchListings = createAsyncThunk(
-    'listings/fetchListings',
-    async () => {
-        const response = await fetch('your-api-endpoint/listings');
-        const data = await response.json();
-        return data;
+export const fetchOwnListings = createAsyncThunk(
+    'listings/fetchOwnListings',
+    async (userId, { rejectWithValue }) => {
+        try {
+            const response = await fetchUserListings(userId);
+
+            // Validate response format
+            if (!response?.openListings || !response?.closedListings) {
+                return rejectWithValue('Invalid response format');
+            }
+
+            return response;
+        } catch (error) {
+            return rejectWithValue(error.message || 'Failed to fetch listings');
+        }
     }
 );
 
@@ -26,17 +37,16 @@ const listingsSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchListings.pending, (state) => {
+            .addCase(fetchOwnListings.pending, (state) => {
                 state.status = 'loading';
             })
-            .addCase(fetchListings.fulfilled, (state, action) => {
+            .addCase(fetchOwnListings.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.listings = action.payload.reduce((acc, listing) => {
-                    acc[listing.$id] = listing;
-                    return acc;
-                }, {});
+                state.openListings = action.payload.openListings;
+                state.closedListings = action.payload.closedListings;
+
             })
-            .addCase(fetchListings.rejected, (state, action) => {
+            .addCase(fetchOwnListings.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message;
             });
@@ -47,6 +57,17 @@ export const { setListings } = listingsSlice.actions;
 
 export default listingsSlice.reducer;
 
-// Add selector to get listings as array
-export const selectAllListings = (state) =>
-    Object.values(state.listings.listings);
+// Memoized listing selectors
+
+const selectOpenListings = (state) => state.listings.openListings;
+const selectClosedListings = (state) => state.listings.closedListings;
+
+export const openListingsArray = createSelector(
+    [selectOpenListings],
+    (openListings) => Object.values(openListings)
+);
+
+export const closedListingsArray = createSelector(
+    [selectClosedListings],
+    (closedListings) => Object.values(closedListings)
+);
