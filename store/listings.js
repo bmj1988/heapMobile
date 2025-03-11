@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
-import { fetchUserListings } from '../lib/lambdas/listings';
+import { fetchUserListings, postListing } from '../lib/lambdas/listings';
 const initialState = {
     openListings: {},
     closedListings: {},
@@ -27,6 +27,22 @@ export const fetchOwnListings = createAsyncThunk(
     }
 );
 
+export const postListingThunk = createAsyncThunk(
+    'listings/postListing',
+    async (form, { rejectWithValue }) => {
+        let { details, location, askingPrice, user, tags } = form
+        let listingDetails = { details, location, askingPrice, user, tags }
+        try {
+            let newListing = await postListing(listingDetails);
+            let uploadedImages = await uploadListingImages(form.images, newListing.$id)
+            newListing.images = uploadedImages;
+            return newListing;
+        } catch (error) {
+            return rejectWithValue(error.message || 'Failed to post listing');
+        }
+    }
+)
+
 const listingsSlice = createSlice({
     name: 'listings',
     initialState: initialState,
@@ -47,6 +63,17 @@ const listingsSlice = createSlice({
 
             })
             .addCase(fetchOwnListings.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
+            .addCase(postListingThunk.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(postListingThunk.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.openListings[action.payload.$id] = action.payload;
+            })
+            .addCase(postListingThunk.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message;
             });
