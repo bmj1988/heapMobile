@@ -9,7 +9,8 @@ import { router } from 'expo-router'
 import { useLocationContext } from '../../context/LocationProvider'
 import { fetchFeedListings, feedListingsArray } from '../../store/feed'
 import { useDispatch, useSelector } from 'react-redux'
-import FeedListEmptyComponent from '../../components/ListEmptyComponents/FeedListEmpty'
+import { FeedListFailedComponent, FeedListEmptyComponent } from '../../components/ListEmptyComponents/FeedListEmpty'
+import Loading from '../../components/animations/Loading'
 
 const Home = () => {
   const dispatch = useDispatch()
@@ -66,9 +67,17 @@ const Home = () => {
         )}
 
 
-        ListEmptyComponent={() => (
-          <FeedListEmptyComponent status={status} onRefresh={onRefresh} />
-        )}
+        ListEmptyComponent={() => {
+         if (status === 'succeeded') (
+            <FeedListEmptyComponent />
+          )
+          else if (status === 'failed') (
+            <FeedListFailedComponent onRefresh={onRefresh} />
+          )
+          else if (status === 'loading') (
+            <Loading />
+          )
+        }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
     </SafeAreaView>
