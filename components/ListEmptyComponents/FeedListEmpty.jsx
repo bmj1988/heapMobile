@@ -4,8 +4,6 @@ import EmptyState from '../EmptyState'
 
 
 export const FeedListEmptyComponent = () => {
-
-
     return (
         <EmptyState
             title={"No listings found."}

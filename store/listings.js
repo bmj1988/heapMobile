@@ -30,12 +30,8 @@ export const fetchOwnListings = createAsyncThunk(
 export const postListingThunk = createAsyncThunk(
     'listings/postListing',
     async (form, { rejectWithValue }) => {
-        let { details, location, askingPrice, user, tags } = form
-        let listingDetails = { details, location, askingPrice, user, tags }
         try {
-            let newListing = await postListing(listingDetails);
-            let uploadedImages = await uploadListingImages(form.images, newListing.$id)
-            newListing.images = uploadedImages;
+            const newListing = await postListing(form);
             return newListing;
         } catch (error) {
             return rejectWithValue(error.message || 'Failed to post listing');
