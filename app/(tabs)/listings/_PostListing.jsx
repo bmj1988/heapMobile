@@ -50,22 +50,15 @@ const PostListingHeader = () => {
         setIsLoading(true)
         let newListing = { ...form }
 
-        if (!currentLocation.$id) {
-            let newLocation = await createLocation({ ...form.location, user: user.$id })
-            newListing.location = newLocation.$id
-            setLocations([...locations, newLocation])
-        }
-        else newListing.location = currentLocation.$id
-
         if (!newListing.askingPrice) newListing.askingPrice = "0"
         else newListing.askingPrice = newListing.askingPrice.toString()
-        // #update this "successful" return will eventually be able to check for returned errors but will eventually be regated to a redux file
-        const successful = await postListing(newListing)
+
+        await dispatch(postListingThunk(newListing))
 
         setForm({
             images: [],
             details: '',
-            location: currentLocation.$id,
+            location: currentLocation,  // Send full location object instead of just ID
             askingPrice: 0,
             user: user.$id,
             tags: [],
