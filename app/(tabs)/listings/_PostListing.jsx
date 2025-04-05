@@ -2,17 +2,19 @@ import { View, Text, Pressable, TextInput, Image, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import CustomButton from '../../../components/CustomButton'
-import { getAllTags, postListing, createLocation } from '@/lib/appwrite'
+import { getAllTags } from '@/lib/appwrite'
 import * as ImagePicker from 'expo-image-picker'
 import { FontAwesome, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons'
 import useAppwrite from '@/lib/useAppwrite'
 import LocationPicker from '../../../components/Modals/PostListingHeaderLocationPicker'
 import keyboardOpen from '../../../hooks/keyboardOpen'
 import TagSelectionModal from '../../../components/Modals/TagSelectionModal'
-
+import { useDispatch } from 'react-redux'
+import { postListingThunk } from '@/store/listings'
 
 const PostListingHeader = () => {
     const { user } = useGlobalContext()
+    const dispatch = useDispatch()
     const [formOpen, setFormOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
@@ -49,16 +51,16 @@ const PostListingHeader = () => {
     const submit = async () => {
         setIsLoading(true)
         let newListing = { ...form }
-
+        newListing.location = currentLocation;
         if (!newListing.askingPrice) newListing.askingPrice = "0"
         else newListing.askingPrice = newListing.askingPrice.toString()
-
+        console.log("NEW LISTING", newListing)
         await dispatch(postListingThunk(newListing))
 
         setForm({
             images: [],
             details: '',
-            location: currentLocation,  // Send full location object instead of just ID
+            location: currentLocation,
             askingPrice: 0,
             user: user.$id,
             tags: [],

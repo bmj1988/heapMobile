@@ -31,7 +31,14 @@ export const postListingThunk = createAsyncThunk(
     'listings/postListing',
     async (form, { rejectWithValue }) => {
         try {
-            const newListing = await postListing(form);
+            const { images, ...listing } = form;
+            let newListing = await postListing(listing);
+            const uploadedImages = await Promise.all(images.map(async (image) => {
+                const fileUrl = await uploadFile(image, 'images', newListing.$id);
+                return { url: fileUrl, listing: newListing.$id };
+            }));
+            createImageRecord(uploadedImages);
+            newListing = { ...newListing, images: uploadedImages }
             return newListing;
         } catch (error) {
             return rejectWithValue(error.message || 'Failed to post listing');
@@ -68,10 +75,12 @@ const listingsSlice = createSlice({
             .addCase(postListingThunk.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.openListings[action.payload.$id] = action.payload;
+                console.log("NEW LISTING", action.payload)
             })
             .addCase(postListingThunk.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message;
+                console.log("ERROR", action.error.message)
             });
     },
 });
