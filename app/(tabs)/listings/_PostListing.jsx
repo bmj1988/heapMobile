@@ -54,7 +54,6 @@ const PostListingHeader = () => {
         newListing.location = currentLocation;
         if (!newListing.askingPrice) newListing.askingPrice = "0"
         else newListing.askingPrice = newListing.askingPrice.toString()
-        console.log("NEW LISTING", newListing)
         await dispatch(postListingThunk(newListing))
 
         setForm({

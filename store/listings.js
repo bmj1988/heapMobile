@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import { fetchUserListings, postListing } from '../lib/lambdas/listings';
+import { uploadFile } from '../lib/appwrite';
+import { createImageRecord } from '../lib/lambdas/images';
 const initialState = {
     openListings: {},
     closedListings: {},
@@ -33,12 +35,17 @@ export const postListingThunk = createAsyncThunk(
         try {
             const { images, ...listing } = form;
             let newListing = await postListing(listing);
+            console.log("NEW LISTING", newListing)
             const uploadedImages = await Promise.all(images.map(async (image) => {
-                const fileUrl = await uploadFile(image, 'images', newListing.$id);
+                const fileUrl = await uploadFile(image, 'image');
                 return { url: fileUrl, listing: newListing.$id };
             }));
+            console.log("UPLOADED IMAGES", uploadedImages)
+            // fire and forget, adjust if encountering issues
+            // will have to change for production anyway.
             createImageRecord(uploadedImages);
             newListing = { ...newListing, images: uploadedImages }
+            console.log("NEW LISTING", newListing)
             return newListing;
         } catch (error) {
             return rejectWithValue(error.message || 'Failed to post listing');
