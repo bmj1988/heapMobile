@@ -55,9 +55,9 @@ const OwnListingDetailsModal = ({ listing, isVisible, setVisible }) => {
                     {/* Bids Section */}
                     <View className="flex-1 mt-2">
                         <Text className="text-white font-rssemibold text-lg mb-2">
-                            {listing.open ? "Bids" : "Awaiting Pickup"}
+                            {listing.isOpen ? "Bids" : "Awaiting Pickup"}
                         </Text>
-                        {listing.open ? (
+                        {listing.isOpen ? (
                             <>
                                 <FlatList
                                     className="flex-1"
