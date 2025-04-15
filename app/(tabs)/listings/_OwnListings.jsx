@@ -15,8 +15,16 @@ const OwnListings = ({ userListings, selectedListing, setSelectedListing }) => {
 
     return (
         <FlatList
-            style={{ marginLeft: 15, marginTop: 10, marginBottom: 120, maxHeight: (userListings.length * 90), width: "90%" }}
-            contentContainerStyle={{ justifyContent: 'center' }}
+            style={{
+                marginLeft: 15,
+                marginTop: 10,
+                width: "90%"
+            }}
+            contentContainerStyle={{
+                justifyContent: 'center',
+                paddingBottom: listings.length > 5 ? 120 : 0, // Only add padding if there are items
+                flexGrow: 1 // This ensures content can grow to fill space
+            }}
             data={listings}
             keyExtractor={(item) => item.$id}
             renderItem={({ item }) => (

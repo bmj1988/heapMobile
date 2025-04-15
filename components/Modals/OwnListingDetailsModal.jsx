@@ -5,16 +5,29 @@ import ListingTag from '../ListingTag'
 import ListingImagesCarousel from './ListingImagesCarousel'
 import BidDisplay from '../listingComponents/BidDisplay'
 import RevokeBidModal from './RevokeBidModal'
+import { useDispatch } from 'react-redux'
+import { deleteListingThunk } from '../../store/listings'
 
-const OwnListingDetailsModal = ({ listing, isVisible, setVisible }) => {
+const OwnListingDetailsModal = ({ listing, isVisible, setVisible, setEditModalVisible }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const [revokeModalVisible, setRevokeModalVisible] = useState(false);
     const BIDS_PER_PAGE = 5;
+    const dispatch = useDispatch()
 
     const paginatedBids = useCallback(() => {
         const startIndex = currentPage * BIDS_PER_PAGE;
         return listing.bids.slice(startIndex, startIndex + BIDS_PER_PAGE);
     }, [currentPage, listing.bids]);
+
+    const openEditModal = () => {
+        setVisible(false)
+        setEditModalVisible(true)
+    }
+
+    const deleteListing = async () => {
+        await dispatch(deleteListingThunk(listing.$id))
+        setVisible(false)
+    }
 
     const hasMoreBids = (currentPage + 1) * BIDS_PER_PAGE < listing.bids.length;
     const hasPreviousBids = currentPage > 0;
@@ -27,10 +40,10 @@ const OwnListingDetailsModal = ({ listing, isVisible, setVisible }) => {
 
     return (
         <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={() => setVisible(false)}>
-            <View className="flex-1 justify-center items-center absolute top-0 bottom-0 left-0 right-0 bg-[rgba(0,0,0,0.5)]">
-                <View className="rounded-2xl border-mint border-solid border-[1px] flex flex-col h-[80%] w-[85%] bg-black-100 p-4">
+            <View className="flex-1 justify-center items-center absolute top-0 bottom-0 left-0 right-0 bg-['rgba(0,0,0,0.5)']">
+                <View className="rounded-2xl border-mint border-solid border-[1px] flex flex-col h-[80%] w-[85%] bg-black-100">
                     {/* Header */}
-                    <View>
+                    <View className="p-4">
                         <Text className="font-rssemibold text-white text-lg">{`Listing #${listing.$id}`}</Text>
                     </View>
 
@@ -40,20 +53,20 @@ const OwnListingDetailsModal = ({ listing, isVisible, setVisible }) => {
                     </View>
 
                     {/* Description */}
-                    <View>
+                    <View className="p-4">
                         <Text className="text-white font-rssemibold">{"Description"}</Text>
                         <Text className="text-white font-rsregular">{listing.description}</Text>
                     </View>
 
                     {/* Tags */}
-                    <View className="flex-row flex-wrap mt-2">
+                    <View className="flex-row flex-wrap mt-2 p-4">
                         {listing.tags.map((tag) => (
-                            <ListingTag tag={tag.name} key={tag.$id} />
+                            <ListingTag tag={tag} key={tag.$id} />
                         ))}
                     </View>
 
                     {/* Bids Section */}
-                    <View className="flex-1 mt-2">
+                    <View className="flex-1 mt-2 p-4">
                         <Text className="text-white font-rssemibold text-lg mb-2">
                             {listing.isOpen ? "Bids" : "Awaiting Pickup"}
                         </Text>
@@ -97,10 +110,17 @@ const OwnListingDetailsModal = ({ listing, isVisible, setVisible }) => {
                         )}
                     </View>
 
-                    {/* Close Button */}
-                    <View className="items-center mt-2">
-                        <Pressable onPress={() => setVisible(false)}>
-                            <FontAwesome name="close" color="#DC143C" size={40} />
+                    {/* Buttons */}
+                    <View className="flex-row w-full">
+                        <Pressable
+                            onPress={openEditModal}
+                            className="w-1/2 bg-mint py-3 rounded-bl-2xl items-center">
+                            <Text className="text-black-100 font-rssemibold text-lg">Edit</Text>
+                        </Pressable>
+                        <Pressable
+                            onPress={deleteListing}
+                            className="w-1/2 bg-[#DC143C] py-3 rounded-br-2xl items-center">
+                            <Text className="text-white font-rssemibold text-lg">Delete</Text>
                         </Pressable>
                     </View>
                 </View>

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
-import { fetchUserListings, postListing } from '../lib/lambdas/listings';
+import { deleteListing, fetchUserListings, postListing } from '../lib/lambdas/listings';
 import { uploadFile } from '../lib/appwrite';
 import { createImageRecord } from '../lib/lambdas/images';
 const initialState = {
@@ -53,6 +53,22 @@ export const postListingThunk = createAsyncThunk(
     }
 )
 
+export const deleteListingThunk = createAsyncThunk(
+    'listings/deleteListing',
+    async (listingId, { rejectWithValue }) => {
+        try {
+            const response = await deleteListing(listingId);
+            if (response) {
+                return listingId;
+            } else {
+                return rejectWithValue(response.error || 'Failed to delete listing');
+            }
+        } catch (error) {
+            return rejectWithValue(error.message || 'Failed to delete listing');
+        }
+    }
+)
+
 const listingsSlice = createSlice({
     name: 'listings',
     initialState: initialState,
@@ -88,7 +104,21 @@ const listingsSlice = createSlice({
                 state.status = 'failed';
                 state.error = action.error.message;
                 console.log("ERROR", action.error.message)
-            });
+            })
+            .addCase(deleteListingThunk.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(deleteListingThunk.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                console.log("DELETED LISTING", action.payload)
+                delete state.openListings[action.payload];
+                delete state.closedListings[action.payload];
+            })
+            .addCase(deleteListingThunk.rejected, (state, action) => {
+                console.log("ERROR", action.error.message)
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
     },
 });
 
