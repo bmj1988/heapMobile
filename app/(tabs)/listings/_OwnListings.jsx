@@ -15,12 +15,12 @@ const OwnListings = ({ userListings, selectedListing, setSelectedListing }) => {
 
     return (
         <FlatList
-            style={{ marginLeft: 15, marginTop: 10, maxHeight: (userListings.length * 90), width: "90%" }}
+            style={{ marginLeft: 15, marginTop: 10, marginBottom: 120, maxHeight: (userListings.length * 90), width: "90%" }}
             contentContainerStyle={{ justifyContent: 'center' }}
             data={listings}
             keyExtractor={(item) => item.$id}
             renderItem={({ item }) => (
-                <OwnListingCard listing={item} ownListings={listings} setListings={setListings} setSelectedListing={setSelectedListing} selectedListing={selectedListing} />
+                <OwnListingCard listing={item} ownListings={listings} setListings={setListings} setSelectedListing={setSelectedListing} selectedListing={selectedListing} key={item.$id} />
             )}
             ListEmptyComponent={() => (
                 <EmptyState

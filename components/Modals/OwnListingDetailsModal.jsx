@@ -87,7 +87,7 @@ const OwnListingDetailsModal = ({ listing, isVisible, setVisible }) => {
                             </>
                         ) : (
                             <View>
-                                <BidDisplay bid={listing.bids.find(bid => bid.accepted)} />
+                                <BidDisplay bid={listing.bids.find(bid => bid?.accepted)} />
                                 <Pressable onPress={() => setRevokeModalVisible(true)}>
                                     <Text className="text-red-500 text-center underline mt-2 font-rsregular">
                                         Revoke this bid
