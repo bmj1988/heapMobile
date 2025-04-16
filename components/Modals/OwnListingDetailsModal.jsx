@@ -5,10 +5,12 @@ import ListingTag from '../ListingTag'
 import ListingImagesCarousel from './ListingImagesCarousel'
 import BidDisplay from '../listingComponents/BidDisplay'
 import RevokeBidModal from './RevokeBidModal'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteListingThunk } from '../../store/listings'
 
-const OwnListingDetailsModal = ({ listing, isVisible, setVisible, setEditModalVisible }) => {
+const OwnListingDetailsModal = ({ listingId, isVisible, setVisible, setEditModalVisible }) => {
+    if (!listingId) return null
+    const listing = useSelector(state => state.listings.openListings[listingId])
     const [currentPage, setCurrentPage] = useState(0);
     const [revokeModalVisible, setRevokeModalVisible] = useState(false);
     const BIDS_PER_PAGE = 5;

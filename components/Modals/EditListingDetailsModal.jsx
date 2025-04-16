@@ -8,10 +8,11 @@ import useAppwrite from '@/lib/useAppwrite'
 import { getAllTags } from '../../lib/appwrite'
 import * as ImagePicker from 'expo-image-picker'
 import TextPressable from '../TextPressable'
+import { useSelector } from 'react-redux'
 
-
-const EditListingDetailsModal = ({ listing, isVisible, setVisible, cycleListings }) => {
-
+const EditListingDetailsModal = ({ listingId, isVisible, setVisible, cycleListings }) => {
+    if (!listingId) return null
+    const listing = useSelector(state => state.listings.openListings[listingId])
     const defaultFormValues = {
         details: listing.details,
         location: listing.location,

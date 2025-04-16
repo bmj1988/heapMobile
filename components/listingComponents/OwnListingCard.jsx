@@ -4,22 +4,18 @@ import EditListingDetailsModal from '../Modals/EditListingDetailsModal'
 import { useState } from 'react'
 import OwnListingDetailsModal from '../Modals/OwnListingDetailsModal'
 
-const OwnListingCard = ({ listing, setSelectedListing, selectedListing }) => {
-
-    const [modalVisible, setModalVisible] = useState(false)
-    const [bidsModalVisible, setBidsModalVisible] = useState(false)
+const OwnListingCard = ({ listing, setSelectedListing, selectedListing, setDetailsModalVisible, setEditModalVisible }) => {
 
     return (
         <>
             <Pressable onPress={() => {
                 setSelectedListing(listing.$id)
-                setBidsModalVisible(true)}} onLongPress={() => setModalVisible(true)} className="m-1">
-                <View style={{ display: 'flex', flexDirection: 'row' }}>
-                    <ListingCard listing={listing} selected={selectedListing && selectedListing === listing.$id} ownListing={true} />
-                </View>
+                setDetailsModalVisible(true)
+            }} onLongPress={() => setEditModalVisible(true)} className="m-1">
+
+                <ListingCard listing={listing} selected={selectedListing && selectedListing === listing.$id} ownListing={true} />
+
             </Pressable>
-            <OwnListingDetailsModal listing={listing} isVisible={bidsModalVisible} setVisible={setBidsModalVisible} setEditModalVisible={setModalVisible} />
-            <EditListingDetailsModal listing={listing} setVisible={setModalVisible} isVisible={modalVisible} />
         </>
     )
 }

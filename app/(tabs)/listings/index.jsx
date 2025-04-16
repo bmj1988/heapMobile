@@ -32,13 +32,14 @@ const Listings = () => {
     useEffect(() => {
         dispatch(fetchOwnListings(user.$id))
     }, [])
+    console.log(openListings)
 
     return (
         <SafeAreaView className="bg-primary h-full justify-between">
             <View>
                 <PostListingHeader />
                 {/* Your posted listings */}
-                <CaretCollapsible text={"Your open listings"} DropdownComponent={<OwnListings userListings={openListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} />} />
+                <CaretCollapsible text={"Your open listings"} DropdownComponent={<OwnListings listings={openListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} />} />
                 {/* Listings you've bid on */}
                 <CaretCollapsible text={"Your pending bids"} DropdownComponent={<UserBids bids={pendingBids} setSelected={setDetailsModal} selected={detailsModal} />} />
                 {/* <UserBids bids={userBids} /> */}
