@@ -1,8 +1,5 @@
-import { View, Pressable } from 'react-native'
+import { Pressable } from 'react-native'
 import ListingCard from "@/components/ListingCard"
-import EditListingDetailsModal from '../Modals/EditListingDetailsModal'
-import { useState } from 'react'
-import OwnListingDetailsModal from '../Modals/OwnListingDetailsModal'
 
 const OwnListingCard = ({ listing, setSelectedListing, selectedListing, setDetailsModalVisible, setEditModalVisible }) => {
 

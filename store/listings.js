@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
-import { deleteListing, fetchUserListings, postListing } from '../lib/lambdas/listings';
-import { uploadFile } from '../lib/appwrite';
+import { deleteListing, editListing, fetchUserListings, postListing } from '../lib/lambdas/listings';
+import { uploadFile, uploadImages } from '../lib/appwrite';
 import { createImageRecord } from '../lib/lambdas/images';
 const initialState = {
     openListings: {},
@@ -36,16 +36,8 @@ export const postListingThunk = createAsyncThunk(
             const { images, ...listing } = form;
             let newListing = await postListing(listing);
             console.log("NEW LISTING", newListing)
-            const uploadedImages = await Promise.all(images.map(async (image) => {
-                const fileUrl = await uploadFile(image, 'image');
-                return { url: fileUrl, listing: newListing.$id };
-            }));
-            console.log("UPLOADED IMAGES", uploadedImages)
-            // fire and forget, adjust if encountering issues
-            // will have to change for production anyway.
-            createImageRecord(uploadedImages);
+            const uploadedImages = await uploadImages(images, newListing.$id);
             newListing = { ...newListing, images: uploadedImages }
-            console.log("NEW LISTING", newListing)
             return newListing;
         } catch (error) {
             return rejectWithValue(error.message || 'Failed to post listing');
@@ -69,6 +61,22 @@ export const deleteListingThunk = createAsyncThunk(
     }
 )
 
+export const editListingThunk = createAsyncThunk(
+    'listings/editListing',
+    async ({ form, images, deletedImages }, { rejectWithValue }) => {
+        try {
+            let editedListing = await editListing(form);
+            if (deletedImages?.length) {
+                await deleteImages(deletedImages);
+                const uploadedImages = await uploadImages(images, form.$id);
+                editedListing = { ...editedListing, images: uploadedImages }
+            }
+            return editedListing;
+        } catch (error) {
+            return rejectWithValue(error.message || 'Failed to edit listing');
+        }
+    }
+)
 const listingsSlice = createSlice({
     name: 'listings',
     initialState: initialState,
@@ -119,6 +127,20 @@ const listingsSlice = createSlice({
                 state.status = 'failed';
                 state.error = action.error.message;
             })
+            .addCase(editListingThunk.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(editListingThunk.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                console.log("EDITED LISTING", action.payload)
+                state.openListings[action.payload.$id] = action.payload;
+            })
+            .addCase(editListingThunk.rejected, (state, action) => {
+                console.log("ERROR", action.error.message)
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
+
     },
 });
 

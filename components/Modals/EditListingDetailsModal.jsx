@@ -8,31 +8,31 @@ import useAppwrite from '@/lib/useAppwrite'
 import { getAllTags } from '../../lib/appwrite'
 import * as ImagePicker from 'expo-image-picker'
 import TextPressable from '../TextPressable'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { useGlobalContext } from '@/context/GlobalProvider'
+import { editListingThunk } from '../../store/listings'
 
-const EditListingDetailsModal = ({ listingId, isVisible, setVisible, cycleListings }) => {
+
+const EditListingDetailsModal = ({ listingId, isVisible, setVisible }) => {
     if (!listingId) return null
+    const { user } = useGlobalContext()
     const listing = useSelector(state => state.listings.openListings[listingId])
     const defaultFormValues = {
+        $id: listing.$id,
         details: listing.details,
         location: listing.location,
         askingPrice: listing.askingPrice,
         tags: listing.tags
     }
-    const defaultImageValue = [...listing.images]
     const { data: tags } = useAppwrite(() => getAllTags())
-    const { data: userLocations } = useAppwrite(() => getUserLocations(listing.user.$id))
     const [showAllTags, setShowAllTags] = useState(false)
     const [form, setForm] = useState(defaultFormValues)
-    const [images, setImages] = useState(defaultImageValue)
+    const [images, setImages] = useState(listing.images)
     const [deletedImages, setDeletedImages] = useState([])
     const [dropdownVisible, setDropdownVisible] = useState(false)
     const [disabled, setDisabled] = useState(!listing.isOpen)
-    const [locations, setLocations] = useState([{ address: "New Location", $id: 0 }])
-
-    useEffect(() => {
-        setLocations([...userLocations, { address: "New Location", $id: 0 }])
-    }, [userLocations])
+    const [locations, setLocations] = useState([...user.locations, { address: "New Location", $id: 0 }])
+    const dispatch = useDispatch()
 
     const openPicker = async () => {
         const result = await ImagePicker.launchImageLibraryAsync(
@@ -71,15 +71,10 @@ const EditListingDetailsModal = ({ listingId, isVisible, setVisible, cycleListin
     }
     const submitEdit = async () => {
         // in future need isLoading, setIsLoading
-        let updated = await updateListing(listing.$id, { ...form }, images, deletedImages)
-        console.log(`ADDRESS`, updated.location.address)
-        if (updated) {
-            cycleListings({ ...form, $id: listing.$id, bids: listing.bids, images })
-            setVisible(false)
-            setShowAllTags(false)
-        }
-
+        await dispatch(editListingThunk({ form, images, deletedImages }))
+        setVisible(false)
     }
+
     return (
         <Modal animationType="none"
             transparent={true}
@@ -92,13 +87,6 @@ const EditListingDetailsModal = ({ listingId, isVisible, setVisible, cycleListin
                         <View className="m-2">
                             <Text className="relative font-rssemibold text-white text-lg">{`Listing #${listing.$id}`}</Text>
                         </View>
-                        {(listing.images.length > 0 || images.length > 0) &&
-                            <View className={"align-start m-2"}>
-                                <TextPressable
-                                    onPress={() => openPicker()}
-                                    textStyle={"text-sm font-rsthin color-white underline"}
-                                    text={"Change images"} />
-                            </View>}
                         <View className="justify-center items-center">
                             <ListingImagesCarousel images={images} setImages={setImages} own={true} imagePicker={openPicker} deletedImages={deletedImages} setDeletedImages={setDeletedImages} />
                         </View>
@@ -213,7 +201,7 @@ const EditListingDetailsModal = ({ listingId, isVisible, setVisible, cycleListin
                                 </Pressable>
                             </View>
                             <View>
-                                <Pressable onPress={() => submitEdit()}>
+                                <Pressable onPress={() => submitEdit()} disabled={form === defaultFormValues && !deletedImages.length}>
                                     <FontAwesome name="check" color="#50bf88" size={40} />
                                 </Pressable>
                             </View>
