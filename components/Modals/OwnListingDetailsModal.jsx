@@ -8,7 +8,7 @@ import RevokeBidModal from './RevokeBidModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteListingThunk } from '../../store/listings'
 
-const OwnListingDetailsModal = ({ listingId, isVisible, setVisible, setEditModalVisible }) => {
+const OwnListingDetailsModal = ({ listingId, isVisible, setVisible, setEditModalVisible, setSelectedListing }) => {
     if (!listingId) return null
     const listing = useSelector(state => state.listings.openListings[listingId])
     const [currentPage, setCurrentPage] = useState(0);
@@ -27,8 +27,9 @@ const OwnListingDetailsModal = ({ listingId, isVisible, setVisible, setEditModal
     }
 
     const deleteListing = async () => {
-        await dispatch(deleteListingThunk(listing.$id))
         setVisible(false)
+        setSelectedListing(null)
+        await dispatch(deleteListingThunk(listing.$id))
     }
 
     const hasMoreBids = (currentPage + 1) * BIDS_PER_PAGE < listing.bids.length;
@@ -56,8 +57,8 @@ const OwnListingDetailsModal = ({ listingId, isVisible, setVisible, setEditModal
 
                     {/* Description */}
                     <View className="p-4">
-                        <Text className="text-white font-rssemibold">{"Description"}</Text>
-                        <Text className="text-white font-rsregular">{listing.description}</Text>
+                        <Text className="text-white font-rssemibold">{"Details:"}</Text>
+                        <Text className="text-white font-rsregular">{listing.details}</Text>
                     </View>
 
                     {/* Tags */}

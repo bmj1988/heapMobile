@@ -38,7 +38,7 @@ const OwnListings = ({ listings, selectedListing, setSelectedListing }) => {
                         onPress={() => console.log("Click pst new listing")} />
                 )}
             />
-            <OwnListingDetailsModal listingId={selectedListing} isVisible={detailsModalVisible} setVisible={setDetailsModalVisible} setEditModalVisible={setEditModalVisible} />
+            <OwnListingDetailsModal listingId={selectedListing} isVisible={detailsModalVisible} setVisible={setDetailsModalVisible} setEditModalVisible={setEditModalVisible} setSelectedListing={setSelectedListing} />
             <EditListingDetailsModal listingId={selectedListing} setVisible={setEditModalVisible} isVisible={editModalVisible} />
         </>
     )
