@@ -21,7 +21,7 @@ const DisplayCardImageSlot = ({ images, imageSize = 60 }) => {
                                 borderWidth: 1,
                             }}
                             className="rounded-md"
-                            key={image.$id ? image.$id : image.uri}
+                            key={image.$id || image.uri || `image-${i}`}
                         />
                     )
                 })}

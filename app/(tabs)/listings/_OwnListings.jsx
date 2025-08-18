@@ -29,7 +29,7 @@ const OwnListings = ({ listings, selectedListing, setSelectedListing }) => {
                 keyExtractor={(item) => item.$id}
                 renderItem={({ item }) => (
                     <OwnListingCard listing={item} setSelectedListing={setSelectedListing} selectedListing={selectedListing} setDetailsModalVisible={setDetailsModalVisible} setEditModalVisible={setEditModalVisible} key={item.$id} />
-                )} setListings
+                )}
                 ListEmptyComponent={() => (
                     <EmptyState
                         title={"No listings found."}

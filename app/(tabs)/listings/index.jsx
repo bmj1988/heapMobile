@@ -11,6 +11,7 @@ import CustomModal from '../../../components/Modals/TestingDetailsModal'
 import PostListingHeader from './_PostListing'
 import ClosedListings from './_ClosedListings'
 import AcceptedBids from './_AcceptedBids'
+import Loading from '@/components/animations/Loading'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchOwnListings, openListingsArray, closedListingsArray } from '@/store/listings'
 
@@ -38,15 +39,19 @@ const Listings = () => {
         <SafeAreaView className="bg-primary h-full justify-between">
             <View>
                 <PostListingHeader />
-                {/* Your posted listings */}
-                <CaretCollapsible text={"Your open listings"} DropdownComponent={<OwnListings listings={openListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} />} />
-                {/* Listings you've bid on */}
-                <CaretCollapsible text={"Your pending bids"} DropdownComponent={<UserBids bids={pendingBids} setSelected={setDetailsModal} selected={detailsModal} />} />
-                {/* <UserBids bids={userBids} /> */}
-                <CaretCollapsible text={"Bids ready for pickup"} DropdownComponent={<AcceptedBids bids={acceptedBids} setSelected={setDetailsModal} selected={detailsModal} />} />
-                <CaretCollapsible text={"Listings waiting for pickup"} DropdownComponent={<ClosedListings closedListings={closedListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} />} />
-
-
+                {status === 'loading' ? (
+                    <Loading  message="Loading your listings..." />
+                ) : (
+                    <>
+                        {/* Your posted listings */}
+                        <CaretCollapsible text={"Your open listings"} DropdownComponent={<OwnListings listings={openListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} />} />
+                        {/* Listings you've bid on */}
+                        <CaretCollapsible text={"Your pending bids"} DropdownComponent={<UserBids bids={pendingBids} setSelected={setDetailsModal} selected={detailsModal} />} />
+                        {/* <UserBids bids={userBids} /> */}
+                        <CaretCollapsible text={"Bids ready for pickup"} DropdownComponent={<AcceptedBids bids={acceptedBids} setSelected={setDetailsModal} selected={detailsModal} />} />
+                        <CaretCollapsible text={"Listings waiting for pickup"} DropdownComponent={<ClosedListings closedListings={closedListings} selectedListing={selectedListing} setSelectedListing={setSelectedListing} />} />
+                    </>
+                )}
             </View>
             {Object.keys(detailsModal).length > 0 && <CustomModal visible={Object.keys(detailsModal).length > 0} onClose={() => setDetailsModal({})} listing={detailsModal} />}
         </SafeAreaView>
