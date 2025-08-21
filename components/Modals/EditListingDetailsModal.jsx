@@ -26,6 +26,7 @@ const EditListingDetailsModal = ({ listingId, isVisible, setVisible }) => {
     }
     const { data: tags } = useAppwrite(() => getAllTags())
     const [showAllTags, setShowAllTags] = useState(false)
+    const [newImages, setNewImages] = useState([])
     const [form, setForm] = useState(defaultFormValues)
     const [images, setImages] = useState(listing.images)
     const [deletedImages, setDeletedImages] = useState([])
@@ -47,7 +48,17 @@ const EditListingDetailsModal = ({ listingId, isVisible, setVisible }) => {
             }
         )
         if (!result.canceled) {
-            setImages(result.assets)
+            let originalImages = images
+            numberOfOriginalImages = originalImages.length
+            numberOfNewImages = result.assets.length
+            if (numberOfOriginalImages + numberOfNewImages <= 3) {
+                setImages([...images, ...result.assets])
+            } else {
+                setImages([...result.assets, ...images].slice(0, 3))
+                setDeletedImages(originalImages.filter((image) => !images.includes(image)))
+                // !!!! left off, resume with redux
+            }
+            setNewImages(result.assets)
         }
     }
 
@@ -88,7 +99,7 @@ const EditListingDetailsModal = ({ listingId, isVisible, setVisible }) => {
                             <Text className="relative font-rssemibold text-white text-lg">{`Listing #${listing.$id}`}</Text>
                         </View>
                         <View className="justify-center items-center">
-                            <ListingImagesCarousel images={images} setImages={setImages} own={true} imagePicker={openPicker} deletedImages={deletedImages} setDeletedImages={setDeletedImages} />
+                            <ListingImagesCarousel images={images} setImages={setImages} editingListing={true} imagePicker={openPicker} deletedImages={deletedImages} setDeletedImages={setDeletedImages} />
                         </View>
 
 

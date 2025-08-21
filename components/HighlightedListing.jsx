@@ -2,7 +2,6 @@ import { View, Text, TextInput, Pressable } from 'react-native'
 import { useEffect, useState } from 'react'
 import CustomButton from './CustomButton'
 import CustomModal from './Modals/TestingDetailsModal'
-import { postBid } from '../lib/appwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import { placeBid } from '../lib/appwriteFunctions'
 

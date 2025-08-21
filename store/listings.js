@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import { deleteListing, editListing, fetchUserListings, postListing } from '../lib/lambdas/listings';
-import { uploadFile, uploadImages } from '../lib/appwrite';
-import { createImageRecord } from '../lib/lambdas/images';
+import { uploadImages } from '../lib/appwrite';
+import { deleteImages } from '../lib/lambdas/images';
 const initialState = {
     openListings: {},
     closedListings: {},
@@ -66,10 +66,13 @@ export const editListingThunk = createAsyncThunk(
     async ({ form, images, deletedImages }, { rejectWithValue }) => {
         try {
             let editedListing = await editListing(form);
+            const imagesToUpload = images.filter(image => !image.url);
+            const uploadedImages = await uploadImages(imagesToUpload, form.$id);
+            const allImages = [...uploadedImages, ...images.filter(image => image.url)];
+            editedListing = { ...editedListing, images: allImages }
             if (deletedImages?.length) {
                 await deleteImages(deletedImages);
-                const uploadedImages = await uploadImages(images, form.$id);
-                editedListing = { ...editedListing, images: uploadedImages }
+
             }
             return editedListing;
         } catch (error) {

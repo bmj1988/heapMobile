@@ -22,7 +22,7 @@ import TextPressable from '../TextPressable'
 //     }
 // }
 
-const ListingImagesCarousel = ({ images, own, setImages, imagePicker, setDeletedImages, deletedImages }) => {
+const ListingImagesCarousel = ({ images, editingListing = false, setImages, imagePicker, setDeletedImages, deletedImages }) => {
 
     const deleteImage = (item) => {
         if (item.url) setDeletedImages([...deletedImages, item.$id])
@@ -43,11 +43,13 @@ const ListingImagesCarousel = ({ images, own, setImages, imagePicker, setDeleted
             keyExtractor={(item) => (item.$id)}
             renderItem={({ item }) => (
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Image
-                        source={item.url ? { uri: item.url } : { uri: item.uri }}
-                        style={{ height: 150, width: 100 }}
-                        resizeMode='contain' />
-                    {own ? (
+                    <Pressable onPress={() => editingListing ? imagePicker() : null}>
+                        <Image
+                            source={item.url ? { uri: item.url } : { uri: item.uri }}
+                            style={{ height: 150, width: 100 }}
+                            resizeMode='contain' />
+                    </Pressable>
+                    {editingListing ? (
                         <TextPressable
                             onPress={() => deleteImage(item)}
                             textStyle={"text-sm font-rsthin color-carmine underline"}
@@ -61,7 +63,7 @@ const ListingImagesCarousel = ({ images, own, setImages, imagePicker, setDeleted
                 <EmptyState icon={"image"}
                     title={"No image provided"}
                     subtitle={null}
-                    onPress={own ? () => imagePicker() : null}
+                    onPress={editingListing ? () => imagePicker() : null}
                     button={false} />
             }
         // onViewableItemsChanged={viewableItemsChanged}
