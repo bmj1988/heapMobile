@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import { deleteListing, editListing, fetchUserListings, postListing } from '../lib/lambdas/listings';
-import { uploadImages } from '../lib/appwrite';
-import { deleteImages } from '../lib/lambdas/images';
+import { deleteImages, uploadImages } from '../lib/lambdas/images';
+
 const initialState = {
     openListings: {},
     closedListings: {},
@@ -63,15 +63,26 @@ export const deleteListingThunk = createAsyncThunk(
 
 export const editListingThunk = createAsyncThunk(
     'listings/editListing',
-    async ({ form, images, deletedImages }, { rejectWithValue }) => {
+    async ({ form, currentImages, deletedImages, newImages }, { rejectWithValue }) => {
+        console.log("****deletedImages", deletedImages)
+        console.log("****newImages", newImages)
+        console.log("****images", currentImages)
         try {
             let editedListing = await editListing(form);
-            const imagesToUpload = images.filter(image => !image.url);
-            const uploadedImages = await uploadImages(imagesToUpload, form.$id);
-            const allImages = [...uploadedImages, ...images.filter(image => image.url)];
-            editedListing = { ...editedListing, images: allImages }
+            if (!currentImages.length && !newImages.length) {
+                editedListing = { ...editedListing, images: currentImages }
+            }
+
+            else if (newImages?.length) {
+                const uploadedImages = await uploadImages(newImages, form.$id);
+                const allImages = [...uploadedImages, ...currentImages.filter(image => image.url)].slice(0, 3);
+                editedListing = { ...editedListing, images: allImages }
+            }
+
             if (deletedImages?.length) {
                 await deleteImages(deletedImages);
+                const editedImages = currentImages.filter(image => !deletedImages.includes(image));
+                editedListing = { ...editedListing, images: editedImages }
 
             }
             return editedListing;

@@ -28,7 +28,7 @@ const ListingCard = ({ listing, selected, ownListing, bid }) => {
 
     // Images slot
     const imagesSlot = (
-        <DisplayCardImageSlot images={listing.images} />
+        <DisplayCardImageSlot images={listing?.images || []} />
     )
 
     // Dynamic fourth slot based on conditions

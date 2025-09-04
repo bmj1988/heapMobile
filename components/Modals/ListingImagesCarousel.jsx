@@ -1,6 +1,6 @@
 import { FlatList, Image, Pressable, Text, View } from 'react-native'
-import EmptyState from '../EmptyState'
 import TextPressable from '../TextPressable'
+import NoImageProvided from '../listingComponents/NoImageProvided'
 // import * as Animatable from 'react-native-animatable'
 
 
@@ -25,7 +25,8 @@ import TextPressable from '../TextPressable'
 const ListingImagesCarousel = ({ images, editingListing = false, setImages, imagePicker, setDeletedImages, deletedImages }) => {
 
     const deleteImage = (item) => {
-        if (item.url) setDeletedImages([...deletedImages, item.$id])
+        if (item.url) setDeletedImages([...deletedImages, item])
+        console.log("$$$$$deletedImages", deletedImages)
         const uri = item.url ? item.url : item.uri
         setImages(images.filter((image) => (uri !== image.url && uri !== image.uri)))
     }
@@ -40,9 +41,9 @@ const ListingImagesCarousel = ({ images, editingListing = false, setImages, imag
     return (
         <FlatList
             data={images}
-            keyExtractor={(item) => (item.$id)}
+            keyExtractor={(item) => (item.$id || item.uri)}
             renderItem={({ item }) => (
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ justifyContent: 'center', alignItems: 'center' }} key={item.$id || item.uri}>
                     <Pressable onPress={() => editingListing ? imagePicker() : null}>
                         <Image
                             source={item.url ? { uri: item.url } : { uri: item.uri }}
@@ -60,11 +61,7 @@ const ListingImagesCarousel = ({ images, editingListing = false, setImages, imag
             )}
             horizontal
             ListEmptyComponent={
-                <EmptyState icon={"image"}
-                    title={"No image provided"}
-                    subtitle={null}
-                    onPress={editingListing ? () => imagePicker() : null}
-                    button={false} />
+                <NoImageProvided onPress={editingListing ? imagePicker : null} />
             }
         // onViewableItemsChanged={viewableItemsChanged}
         // viewabilityConfig={{

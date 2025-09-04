@@ -28,7 +28,7 @@ const EditListingDetailsModal = ({ listingId, isVisible, setVisible }) => {
     const [showAllTags, setShowAllTags] = useState(false)
     const [newImages, setNewImages] = useState([])
     const [form, setForm] = useState(defaultFormValues)
-    const [images, setImages] = useState(listing.images)
+    const [currentImages, setCurrentImages] = useState(listing.images || [])
     const [deletedImages, setDeletedImages] = useState([])
     const [dropdownVisible, setDropdownVisible] = useState(false)
     const [disabled, setDisabled] = useState(!listing.isOpen)
@@ -48,15 +48,15 @@ const EditListingDetailsModal = ({ listingId, isVisible, setVisible }) => {
             }
         )
         if (!result.canceled) {
-            let originalImages = images
+            let originalImages = currentImages
             numberOfOriginalImages = originalImages.length
             numberOfNewImages = result.assets.length
             if (numberOfOriginalImages + numberOfNewImages <= 3) {
-                setImages([...images, ...result.assets])
+                setCurrentImages([...currentImages, ...result.assets])
             } else {
-                setImages([...result.assets, ...images].slice(0, 3))
-                setDeletedImages(originalImages.filter((image) => !images.includes(image)))
-                // !!!! left off, resume with redux
+                const updatedImages = [...result.assets, ...currentImages].slice(0, 3)
+                setCurrentImages(updatedImages)
+                setDeletedImages(originalImages.filter((image) => !updatedImages.includes(image) && image.url))
             }
             setNewImages(result.assets)
         }
@@ -77,12 +77,15 @@ const EditListingDetailsModal = ({ listingId, isVisible, setVisible }) => {
     const onModalClose = () => {
         setVisible(false)
         setForm(defaultFormValues)
+        setCurrentImages(listing.images || [])
+        setDeletedImages([])
         setShowAllTags(false)
 
     }
     const submitEdit = async () => {
         // in future need isLoading, setIsLoading
-        await dispatch(editListingThunk({ form, images, deletedImages }))
+        console.log("deletedImages", deletedImages)
+        await dispatch(editListingThunk({ form, currentImages, deletedImages, newImages }))
         setVisible(false)
     }
 
@@ -99,7 +102,7 @@ const EditListingDetailsModal = ({ listingId, isVisible, setVisible }) => {
                             <Text className="relative font-rssemibold text-white text-lg">{`Listing #${listing.$id}`}</Text>
                         </View>
                         <View className="justify-center items-center">
-                            <ListingImagesCarousel images={images} setImages={setImages} editingListing={true} imagePicker={openPicker} deletedImages={deletedImages} setDeletedImages={setDeletedImages} />
+                            <ListingImagesCarousel images={currentImages} setImages={setCurrentImages} editingListing={true} imagePicker={openPicker} deletedImages={deletedImages} setDeletedImages={setDeletedImages} />
                         </View>
 
 
